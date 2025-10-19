@@ -1,0 +1,2 @@
+id,usuarioId,libroId,calificacion,comentario,fechaCreacion,aprobada
+effd444f-08ac-43c3-a46b-c9d745c4235f,EST001,LIB001,5,Excelente libro,2025-10-18T19:00,false
