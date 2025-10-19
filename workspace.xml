@@ -4,68 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c085fd22-159d-4e2a-9d1a-1f69d4b48f19" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/API_TESTING_GUIDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Biblioteca_API.postman_collection.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/bibliotecas.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/libros.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/notificaciones.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/prestamos.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/resenas.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/reservas.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/csv/usuarios.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/BibliotecaPublicaApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/config/DataLoader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/config/JacksonConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/AutorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/BibliotecaController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/EditorialController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/LibroController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/NotificacionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/PrestamoController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/ResenaController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/ReservaController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/controller/UsuarioController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/dto/UsuarioDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/enums/BookGenre.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/enums/LoanStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/enums/UserType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/interfaces/Exportable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/interfaces/Notificable.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Administrador.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Autor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Biblioteca.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Editorial.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Estudiante.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Libro.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Notificacion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Prestamo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Profesor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Resena.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Reserva.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/model/Usuario.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/records/RegistroActividad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/AutorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/BibliotecaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/CSVService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/EditorialService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/LibroService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/NotificacionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/PrestamoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/ResenaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/ReservaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/co/edu/umanizales/biblioteca_publica/service/UsuarioService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/requerimientos.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/co/edu/umanizales/biblioteca_publica/BibliotecaPublicaApplicationTests.java" afterDir="false" />
-    </list>
+    <list default="true" id="c085fd22-159d-4e2a-9d1a-1f69d4b48f19" name="Changes" comment="comit crear autor" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -143,11 +82,49 @@
       <workItem from="1760835943105" duration="766000" />
       <workItem from="1760837067072" duration="4093000" />
       <workItem from="1760843000977" duration="2653000" />
-      <workItem from="1760845999412" duration="163000" />
+      <workItem from="1760845999412" duration="1711000" />
     </task>
+    <task id="LOCAL-00001" summary="primer commit de prueba">
+      <option name="closed" value="true" />
+      <created>1760846628323</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1760846628323</updated>
+    </task>
+    <task id="LOCAL-00002" summary="primer commit de prueba">
+      <option name="closed" value="true" />
+      <created>1760846727243</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1760846727243</updated>
+    </task>
+    <task id="LOCAL-00003" summary="comit crear autor">
+      <option name="closed" value="true" />
+      <created>1760847145409</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1760847145409</updated>
+    </task>
+    <task id="LOCAL-00004" summary="comit crear autor">
+      <option name="closed" value="true" />
+      <created>1760847507979</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760847507979</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="primer commit de prueba" />
+    <MESSAGE value="comit crear autor" />
+    <option name="LAST_COMMIT_MESSAGE" value="comit crear autor" />
   </component>
 </project>
