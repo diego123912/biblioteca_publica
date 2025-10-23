@@ -16,6 +16,7 @@ public class EditorialController {
 
     private final EditorialService editorialService;
 
+
     public EditorialController(EditorialService editorialService) {
         this.editorialService = editorialService;
     }
