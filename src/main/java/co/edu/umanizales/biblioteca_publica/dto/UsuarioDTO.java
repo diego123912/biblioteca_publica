@@ -74,6 +74,7 @@ public class UsuarioDTO {
             dto.setRol(admin.getRol());
             dto.setPermisoTotal(admin.isPermisoTotal());
         }
+
         
         return dto;
     }

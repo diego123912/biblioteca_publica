@@ -18,6 +18,13 @@ public class Administrador extends Usuario {
         this.permisoTotal = permisoTotal;
     }
 
+    /**
+     * Getter explícito para evitar problemas si Lombok/annotation processing no están activos en el IDE.
+     */
+    public boolean isPermisoTotal() {
+        return permisoTotal;
+    }
+
     @Override
     public int getLimitePrestamos() {
         return Integer.MAX_VALUE;
