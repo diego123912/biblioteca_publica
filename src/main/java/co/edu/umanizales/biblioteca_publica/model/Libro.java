@@ -8,31 +8,31 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Libro {
+public class Book {
     private String id;
     private String isbn;
-    private String titulo;
-    private String autor;
-    private String editorial;
-    private int anioPublicacion;
-    private BookGenre genero;
-    private int cantidadDisponible;
-    private int cantidadTotal;
-    private String ubicacion;
+    private String title;
+    private String author;
+    private String publisher;
+    private int publicationYear;
+    private BookGenre genre;
+    private int availableQuantity;
+    private int totalQuantity;
+    private String location;
 
-    public boolean estaDisponible() {
-        return cantidadDisponible > 0;
+    public boolean isAvailable() {
+        return availableQuantity > 0;
     }
 
-    public void prestar() {
-        if (cantidadDisponible > 0) {
-            cantidadDisponible--;
+    public void borrow() {
+        if (availableQuantity > 0) {
+            availableQuantity--;
         }
     }
 
-    public void devolver() {
-        if (cantidadDisponible < cantidadTotal) {
-            cantidadDisponible++;
+    public void returnBook() {
+        if (availableQuantity < totalQuantity) {
+            availableQuantity++;
         }
     }
 }

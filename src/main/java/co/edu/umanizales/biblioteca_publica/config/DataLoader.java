@@ -9,166 +9,166 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 /**
- * Carga datos iniciales de ejemplo para facilitar las pruebas de la API.
- * Se ejecuta automáticamente al iniciar la aplicación.
+ * Loads initial sample data to facilitate API testing.
+ * Runs automatically when the application starts.
  */
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    private final LibroService libroService;
-    private final UsuarioService usuarioService;
-    private final BibliotecaService bibliotecaService;
+    private final BookService bookService;
+    private final UserService userService;
+    private final LibraryService libraryService;
 
-    public DataLoader(LibroService libroService, 
-                     UsuarioService usuarioService,
-                     BibliotecaService bibliotecaService) {
-        this.libroService = libroService;
-        this.usuarioService = usuarioService;
-        this.bibliotecaService = bibliotecaService;
+    public DataLoader(BookService bookService, 
+                     UserService userService,
+                     LibraryService libraryService) {
+        this.bookService = bookService;
+        this.userService = userService;
+        this.libraryService = libraryService;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // Solo cargar datos si no hay registros existentes
-        if (libroService.obtenerTodos().isEmpty()) {
-            cargarDatosIniciales();
+        // Only load data if there are no existing records
+        if (bookService.getAll().isEmpty()) {
+            loadInitialData();
         }
     }
 
-    private void cargarDatosIniciales() {
-        System.out.println("Cargando datos iniciales...");
+    private void loadInitialData() {
+        System.out.println("Loading initial data...");
 
-        // Crear biblioteca
-        Biblioteca biblioteca = new Biblioteca(
-            "BIB001",
-            "Biblioteca Central",
-            "Calle 50 # 23-45",
+        // Create library
+        Library library = new Library(
+            "LIB001",
+            "Central Library",
+            "Street 50 # 23-45",
             "8781234",
-            "Lunes a Viernes 8:00 AM - 6:00 PM"
+            "Monday to Friday 8:00 AM - 6:00 PM"
         );
-        bibliotecaService.crear(biblioteca);
+        libraryService.create(library);
 
-        // Crear estudiantes de ejemplo
-        Estudiante estudiante1 = new Estudiante(
-            "EST001",
-            "María",
-            "González",
+        // Create sample students
+        Student student1 = new Student(
+            "STU001",
+            "Maria",
+            "Gonzalez",
             "maria.gonzalez@example.com",
             "3001234567",
-            "Ingeniería de Sistemas",
+            "Systems Engineering",
             "6"
         );
-        usuarioService.crear(estudiante1);
+        userService.create(student1);
 
-        Estudiante estudiante2 = new Estudiante(
-            "EST002",
+        Student student2 = new Student(
+            "STU002",
             "Carlos",
-            "Rodríguez",
+            "Rodriguez",
             "carlos.rodriguez@example.com",
             "3009876543",
-            "Medicina",
+            "Medicine",
             "3"
         );
-        usuarioService.crear(estudiante2);
+        userService.create(student2);
 
-        // Crear profesor de ejemplo
-        Profesor profesor = new Profesor(
-            "PROF001",
+        // Create sample teacher
+        Teacher teacher = new Teacher(
+            "TCH001",
             "Ana",
-            "Martínez",
+            "Martinez",
             "ana.martinez@example.com",
             "3105551234",
-            "Departamento de Ciencias",
-            "Física Cuántica"
+            "Department of Sciences",
+            "Quantum Physics"
         );
-        usuarioService.crear(profesor);
+        userService.create(teacher);
 
-        // Crear administrador
-        Administrador admin = new Administrador(
+        // Create administrator
+        Administrator admin = new Administrator(
             "ADM001",
             "Luis",
-            "Sánchez",
+            "Sanchez",
             "luis.sanchez@example.com",
             "3207778899",
-            "Administrador General",
+            "General Administrator",
             true
         );
-        usuarioService.crear(admin);
+        userService.create(admin);
 
-        // Crear libros de ejemplo
-        Libro libro1 = new Libro(
-            "LIB001",
+        // Create sample books
+        Book book1 = new Book(
+            "BK001",
             "978-3-16-148410-0",
-            "Cien Años de Soledad",
-            "Gabriel García Márquez",
-            "Editorial Sudamericana",
+            "One Hundred Years of Solitude",
+            "Gabriel Garcia Marquez",
+            "Sudamericana Publishing",
             1967,
-            BookGenre.FICCION,
+            BookGenre.FICTION,
             3,
             3,
-            "Estante A1"
+            "Shelf A1"
         );
-        libroService.crear(libro1);
+        bookService.create(book1);
 
-        Libro libro2 = new Libro(
-            "LIB002",
+        Book book2 = new Book(
+            "BK002",
             "978-0-7432-7356-5",
             "1984",
             "George Orwell",
             "Secker & Warburg",
             1949,
-            BookGenre.FICCION,
+            BookGenre.FICTION,
             2,
             2,
-            "Estante A2"
+            "Shelf A2"
         );
-        libroService.crear(libro2);
+        bookService.create(book2);
 
-        Libro libro3 = new Libro(
-            "LIB003",
+        Book book3 = new Book(
+            "BK003",
             "978-0-674-97755-4",
-            "Una Breve Historia del Tiempo",
+            "A Brief History of Time",
             "Stephen Hawking",
             "Bantam Books",
             1988,
-            BookGenre.CIENCIA,
+            BookGenre.SCIENCE,
             4,
             4,
-            "Estante B1"
+            "Shelf B1"
         );
-        libroService.crear(libro3);
+        bookService.create(book3);
 
-        Libro libro4 = new Libro(
-            "LIB004",
+        Book book4 = new Book(
+            "BK004",
             "978-0-13-110362-7",
             "Clean Code",
             "Robert C. Martin",
             "Prentice Hall",
             2008,
-            BookGenre.TECNOLOGIA,
+            BookGenre.TECHNOLOGY,
             5,
             5,
-            "Estante C3"
+            "Shelf C3"
         );
-        libroService.crear(libro4);
+        bookService.create(book4);
 
-        Libro libro5 = new Libro(
-            "LIB005",
+        Book book5 = new Book(
+            "BK005",
             "978-0-201-63361-0",
             "Design Patterns",
             "Gang of Four",
             "Addison-Wesley",
             1994,
-            BookGenre.TECNOLOGIA,
+            BookGenre.TECHNOLOGY,
             3,
             3,
-            "Estante C3"
+            "Shelf C3"
         );
-        libroService.crear(libro5);
+        bookService.create(book5);
 
-        System.out.println("✓ Datos iniciales cargados exitosamente");
-        System.out.println("  - " + usuarioService.obtenerTodos().size() + " usuarios");
-        System.out.println("  - " + libroService.obtenerTodos().size() + " libros");
-        System.out.println("  - " + bibliotecaService.obtenerTodos().size() + " biblioteca");
+        System.out.println("✓ Initial data loaded successfully");
+        System.out.println("  - " + userService.getAll().size() + " users");
+        System.out.println("  - " + bookService.getAll().size() + " books");
+        System.out.println("  - " + libraryService.getAll().size() + " library");
     }
 }

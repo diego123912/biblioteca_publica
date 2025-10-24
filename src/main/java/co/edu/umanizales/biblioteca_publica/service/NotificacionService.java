@@ -1,6 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
-import co.edu.umanizales.biblioteca_publica.model.Notificacion;
+import co.edu.umanizales.biblioteca_publica.model.Notification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class NotificacionService {
+public class NotificationService {
     
     private final CSVService csvService;
-    private final Map<String, Notificacion> notificaciones = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "notificaciones.csv";
+    private final Map<String, Notification> notifications = new ConcurrentHashMap<>();
+    private static final String FILE_NAME = "notifications.csv";
 
-    public NotificacionService(CSVService csvService) {
+    public NotificationService(CSVService csvService) {
         this.csvService = csvService;
         loadFromCSV();
     }
@@ -26,100 +26,100 @@ public class NotificacionService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 6) {
-                    Notificacion notificacion = new Notificacion(
+                    Notification notification = new Notification(
                         row.get(0), // id
-                        row.get(1), // usuarioId
-                        row.get(2), // tipo
-                        row.get(3), // mensaje
-                        LocalDateTime.parse(row.get(4)), // fechaEnvio
-                        Boolean.parseBoolean(row.get(5)) // leida
+                        row.get(1), // userId
+                        row.get(2), // type
+                        row.get(3), // message
+                        LocalDateTime.parse(row.get(4)), // sendDate
+                        Boolean.parseBoolean(row.get(5)) // read
                     );
-                    notificaciones.put(notificacion.getId(), notificacion);
+                    notifications.put(notification.getId(), notification);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error al cargar notificaciones desde CSV: " + e.getMessage());
+            System.err.println("Error loading notifications from CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
         try {
-            List<String> headers = Arrays.asList("id", "usuarioId", "tipo", "mensaje", "fechaEnvio", "leida");
+            List<String> headers = Arrays.asList("id", "userId", "type", "message", "sendDate", "read");
             
-            List<List<String>> data = notificaciones.values().stream()
-                .map(notificacion -> Arrays.asList(
-                    notificacion.getId(),
-                    notificacion.getUsuarioId(),
-                    notificacion.getTipo(),
-                    csvService.escapeCSV(notificacion.getMensaje()),
-                    notificacion.getFechaEnvio().toString(),
-                    String.valueOf(notificacion.isLeida())
+            List<List<String>> data = notifications.values().stream()
+                .map(notification -> Arrays.asList(
+                    notification.getId(),
+                    notification.getUserId(),
+                    notification.getType(),
+                    csvService.escapeCSV(notification.getMessage()),
+                    notification.getSendDate().toString(),
+                    String.valueOf(notification.isRead())
                 ))
                 .collect(Collectors.toList());
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
-            System.err.println("Error al guardar notificaciones en CSV: " + e.getMessage());
+            System.err.println("Error saving notifications to CSV: " + e.getMessage());
         }
     }
 
-    public Notificacion crear(Notificacion notificacion) {
-        if (notificacion.getId() == null || notificacion.getId().isEmpty()) {
-            notificacion.setId(UUID.randomUUID().toString());
+    public Notification create(Notification notification) {
+        if (notification.getId() == null || notification.getId().isEmpty()) {
+            notification.setId(UUID.randomUUID().toString());
         }
-        notificaciones.put(notificacion.getId(), notificacion);
+        notifications.put(notification.getId(), notification);
         saveToCSV();
-        return notificacion;
+        return notification;
     }
 
-    public List<Notificacion> obtenerTodos() {
-        return new ArrayList<>(notificaciones.values());
+    public List<Notification> getAll() {
+        return new ArrayList<>(notifications.values());
     }
 
-    public Optional<Notificacion> obtenerPorId(String id) {
-        return Optional.ofNullable(notificaciones.get(id));
+    public Optional<Notification> getById(String id) {
+        return Optional.ofNullable(notifications.get(id));
     }
 
-    public Notificacion actualizar(String id, Notificacion notificacionActualizada) {
-        if (notificaciones.containsKey(id)) {
-            notificacionActualizada.setId(id);
-            notificaciones.put(id, notificacionActualizada);
+    public Notification update(String id, Notification updatedNotification) {
+        if (notifications.containsKey(id)) {
+            updatedNotification.setId(id);
+            notifications.put(id, updatedNotification);
             saveToCSV();
-            return notificacionActualizada;
+            return updatedNotification;
         }
         return null;
     }
 
-    public boolean eliminar(String id) {
-        if (notificaciones.remove(id) != null) {
+    public boolean delete(String id) {
+        if (notifications.remove(id) != null) {
             saveToCSV();
             return true;
         }
         return false;
     }
 
-    public List<Notificacion> obtenerPorUsuario(String usuarioId) {
-        return notificaciones.values().stream()
-            .filter(n -> n.getUsuarioId().equals(usuarioId))
-            .sorted(Comparator.comparing(Notificacion::getFechaEnvio).reversed())
+    public List<Notification> getByUser(String userId) {
+        return notifications.values().stream()
+            .filter(n -> n.getUserId().equals(userId))
+            .sorted(Comparator.comparing(Notification::getSendDate).reversed())
             .collect(Collectors.toList());
     }
 
-    public List<Notificacion> obtenerNoLeidas(String usuarioId) {
-        return notificaciones.values().stream()
-            .filter(n -> n.getUsuarioId().equals(usuarioId) && !n.isLeida())
-            .sorted(Comparator.comparing(Notificacion::getFechaEnvio).reversed())
+    public List<Notification> getUnread(String userId) {
+        return notifications.values().stream()
+            .filter(n -> n.getUserId().equals(userId) && !n.isRead())
+            .sorted(Comparator.comparing(Notification::getSendDate).reversed())
             .collect(Collectors.toList());
     }
 
-    public Notificacion marcarComoLeida(String id) {
-        Optional<Notificacion> notificacionOpt = obtenerPorId(id);
-        if (notificacionOpt.isPresent()) {
-            Notificacion notificacion = notificacionOpt.get();
-            notificacion.marcarComoLeida();
-            notificaciones.put(id, notificacion);
+    public Notification markAsRead(String id) {
+        Optional<Notification> notificationOpt = getById(id);
+        if (notificationOpt.isPresent()) {
+            Notification notification = notificationOpt.get();
+            notification.markAsRead();
+            notifications.put(id, notification);
             saveToCSV();
-            return notificacion;
+            return notification;
         }
         return null;
     }

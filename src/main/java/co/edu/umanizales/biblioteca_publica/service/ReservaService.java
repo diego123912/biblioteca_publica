@@ -1,6 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
-import co.edu.umanizales.biblioteca_publica.model.Reserva;
+import co.edu.umanizales.biblioteca_publica.model.Reservation;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class ReservaService {
+public class ReservationService {
     
     private final CSVService csvService;
-    private final Map<String, Reserva> reservas = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "reservas.csv";
+    private final Map<String, Reservation> reservations = new ConcurrentHashMap<>();
+    private static final String FILE_NAME = "reservations.csv";
 
-    public ReservaService(CSVService csvService) {
+    public ReservationService(CSVService csvService) {
         this.csvService = csvService;
         loadFromCSV();
     }
@@ -26,113 +26,113 @@ public class ReservaService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 6) {
-                    Reserva reserva = new Reserva(
+                    Reservation reservation = new Reservation(
                         row.get(0), // id
-                        row.get(1), // usuarioId
-                        row.get(2), // libroId
-                        LocalDateTime.parse(row.get(3)), // fechaReserva
-                        LocalDateTime.parse(row.get(4)), // fechaExpiracion
-                        Boolean.parseBoolean(row.get(5)), // activa
-                        Boolean.parseBoolean(row.get(6))  // completada
+                        row.get(1), // userId
+                        row.get(2), // bookId
+                        LocalDateTime.parse(row.get(3)), // reservationDate
+                        LocalDateTime.parse(row.get(4)), // expirationDate
+                        Boolean.parseBoolean(row.get(5)), // active
+                        Boolean.parseBoolean(row.get(6))  // completed
                     );
-                    reservas.put(reserva.getId(), reserva);
+                    reservations.put(reservation.getId(), reservation);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error al cargar reservas desde CSV: " + e.getMessage());
+            System.err.println("Error loading reservations from CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
         try {
-            List<String> headers = Arrays.asList("id", "usuarioId", "libroId", "fechaReserva", 
-                "fechaExpiracion", "activa", "completada");
+            List<String> headers = Arrays.asList("id", "userId", "bookId", "reservationDate", 
+                "expirationDate", "active", "completed");
             
-            List<List<String>> data = reservas.values().stream()
-                .map(reserva -> Arrays.asList(
-                    reserva.getId(),
-                    reserva.getUsuarioId(),
-                    reserva.getLibroId(),
-                    reserva.getFechaReserva().toString(),
-                    reserva.getFechaExpiracion().toString(),
-                    String.valueOf(reserva.isActiva()),
-                    String.valueOf(reserva.isCompletada())
+            List<List<String>> data = reservations.values().stream()
+                .map(reservation -> Arrays.asList(
+                    reservation.getId(),
+                    reservation.getUserId(),
+                    reservation.getBookId(),
+                    reservation.getReservationDate().toString(),
+                    reservation.getExpirationDate().toString(),
+                    String.valueOf(reservation.isActive()),
+                    String.valueOf(reservation.isCompleted())
                 ))
                 .collect(Collectors.toList());
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
-            System.err.println("Error al guardar reservas en CSV: " + e.getMessage());
+            System.err.println("Error saving reservations to CSV: " + e.getMessage());
         }
     }
 
-    public Reserva crear(Reserva reserva) {
-        if (reserva.getId() == null || reserva.getId().isEmpty()) {
-            reserva.setId(UUID.randomUUID().toString());
+    public Reservation create(Reservation reservation) {
+        if (reservation.getId() == null || reservation.getId().isEmpty()) {
+            reservation.setId(UUID.randomUUID().toString());
         }
-        reservas.put(reserva.getId(), reserva);
+        reservations.put(reservation.getId(), reservation);
         saveToCSV();
-        return reserva;
+        return reservation;
     }
 
-    public List<Reserva> obtenerTodos() {
-        return new ArrayList<>(reservas.values());
+    public List<Reservation> getAll() {
+        return new ArrayList<>(reservations.values());
     }
 
-    public Optional<Reserva> obtenerPorId(String id) {
-        return Optional.ofNullable(reservas.get(id));
+    public Optional<Reservation> getById(String id) {
+        return Optional.ofNullable(reservations.get(id));
     }
 
-    public Reserva actualizar(String id, Reserva reservaActualizada) {
-        if (reservas.containsKey(id)) {
-            reservaActualizada.setId(id);
-            reservas.put(id, reservaActualizada);
+    public Reservation update(String id, Reservation updatedReservation) {
+        if (reservations.containsKey(id)) {
+            updatedReservation.setId(id);
+            reservations.put(id, updatedReservation);
             saveToCSV();
-            return reservaActualizada;
+            return updatedReservation;
         }
         return null;
     }
 
-    public boolean eliminar(String id) {
-        if (reservas.remove(id) != null) {
+    public boolean delete(String id) {
+        if (reservations.remove(id) != null) {
             saveToCSV();
             return true;
         }
         return false;
     }
 
-    public List<Reserva> obtenerPorUsuario(String usuarioId) {
-        return reservas.values().stream()
-            .filter(r -> r.getUsuarioId().equals(usuarioId))
+    public List<Reservation> getByUser(String userId) {
+        return reservations.values().stream()
+            .filter(r -> r.getUserId().equals(userId))
             .collect(Collectors.toList());
     }
 
-    public List<Reserva> obtenerActivas() {
-        return reservas.values().stream()
-            .filter(Reserva::isActiva)
+    public List<Reservation> getActive() {
+        return reservations.values().stream()
+            .filter(Reservation::isActive)
             .collect(Collectors.toList());
     }
 
-    public Reserva cancelar(String id) {
-        Optional<Reserva> reservaOpt = obtenerPorId(id);
-        if (reservaOpt.isPresent()) {
-            Reserva reserva = reservaOpt.get();
-            reserva.cancelar();
-            reservas.put(id, reserva);
+    public Reservation cancel(String id) {
+        Optional<Reservation> reservationOpt = getById(id);
+        if (reservationOpt.isPresent()) {
+            Reservation reservation = reservationOpt.get();
+            reservation.cancel();
+            reservations.put(id, reservation);
             saveToCSV();
-            return reserva;
+            return reservation;
         }
         return null;
     }
 
-    public Reserva completar(String id) {
-        Optional<Reserva> reservaOpt = obtenerPorId(id);
-        if (reservaOpt.isPresent()) {
-            Reserva reserva = reservaOpt.get();
-            reserva.completar();
-            reservas.put(id, reserva);
+    public Reservation complete(String id) {
+        Optional<Reservation> reservationOpt = getById(id);
+        if (reservationOpt.isPresent()) {
+            Reservation reservation = reservationOpt.get();
+            reservation.complete();
+            reservations.put(id, reservation);
             saveToCSV();
-            return reserva;
+            return reservation;
         }
         return null;
     }

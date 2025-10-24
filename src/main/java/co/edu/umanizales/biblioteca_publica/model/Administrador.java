@@ -8,30 +8,30 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Administrador extends Usuario {
-    private String rol;
-    private boolean permisoTotal;
+public class Administrator extends User {
+    private String role;
+    private boolean fullPermission;
 
-    public Administrador(String id, String nombre, String apellido, String email, String telefono, String rol, boolean permisoTotal) {
-        super(id, nombre, apellido, email, telefono, UserType.ADMINISTRADOR);
-        this.rol = rol;
-        this.permisoTotal = permisoTotal;
+    public Administrator(String id, String firstName, String lastName, String email, String phone, String role, boolean fullPermission) {
+        super(id, firstName, lastName, email, phone, UserType.ADMINISTRATOR);
+        this.role = role;
+        this.fullPermission = fullPermission;
     }
 
     /**
-     * Getter explícito para evitar problemas si Lombok/annotation processing no están activos en el IDE.
+     * Explicit getter to avoid issues if Lombok/annotation processing is not active in the IDE.
      */
-    public boolean isPermisoTotal() {
-        return permisoTotal;
+    public boolean isFullPermission() {
+        return fullPermission;
     }
 
     @Override
-    public int getLimitePrestamos() {
+    public int getLoanLimit() {
         return Integer.MAX_VALUE;
     }
 
     @Override
-    public int getDiasPrestamo() {
+    public int getLoanDays() {
         return 60;
     }
 }

@@ -11,26 +11,26 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Autor {
+public class Author {
     private String id;
-    private String nombre;
-    private String apellido;
-    private String nacionalidad;
-    private LocalDate fechaNacimiento;
-    private String biografia;
-    private List<String> librosIds = new ArrayList<>();
+    private String firstName;
+    private String lastName;
+    private String nationality;
+    private LocalDate birthDate;
+    private String biography;
+    private List<String> bookIds = new ArrayList<>();
 
-    public Autor(String id, String nombre, String apellido, String nacionalidad, LocalDate fechaNacimiento, String biografia) {
+    public Author(String id, String firstName, String lastName, String nationality, LocalDate birthDate, String biography) {
         this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.nacionalidad = nacionalidad;
-        this.fechaNacimiento = fechaNacimiento;
-        this.biografia = biografia;
-        this.librosIds = new ArrayList<>();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nationality = nationality;
+        this.birthDate = birthDate;
+        this.biography = biography;
+        this.bookIds = new ArrayList<>();
     }
 
-    public String getNombreCompleto() {
-        return nombre + " " + apellido;
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }

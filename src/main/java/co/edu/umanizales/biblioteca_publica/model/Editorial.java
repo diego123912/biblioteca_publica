@@ -10,20 +10,22 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Editorial {
-    private String id;
-    private String nombre;
-    private String pais;
-    private String sitioWeb;
-    private String contacto;
-    private List<String> librosIds = new ArrayList<>();
+public class Publisher {
 
-    public Editorial(String id, String nombre, String pais, String sitioWeb, String contacto) {
+
+    private String id;
+    private String name;
+    private String country;
+    private String website;
+    private String contact;
+    private List<String> bookIds = new ArrayList<>();
+
+    public Publisher(String id, String name, String country, String website, String contact) {
         this.id = id;
-        this.nombre = nombre;
-        this.pais = pais;
-        this.sitioWeb = sitioWeb;
-        this.contacto = contacto;
-        this.librosIds = new ArrayList<>();
+        this.name = name;
+        this.country = country;
+        this.website = website;
+        this.contact = contact;
+        this.bookIds = new ArrayList<>();
     }
 }

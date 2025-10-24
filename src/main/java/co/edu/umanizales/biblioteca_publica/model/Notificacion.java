@@ -9,24 +9,24 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notificacion {
+public class Notification {
     private String id;
-    private String usuarioId;
-    private String tipo; // PRESTAMO, DEVOLUCION, VENCIMIENTO, GENERAL
-    private String mensaje;
-    private LocalDateTime fechaEnvio;
-    private boolean leida;
+    private String userId;
+    private String type; // LOAN, RETURN, OVERDUE, GENERAL
+    private String message;
+    private LocalDateTime sendDate;
+    private boolean read;
 
-    public Notificacion(String id, String usuarioId, String tipo, String mensaje, LocalDateTime fechaEnvio) {
+    public Notification(String id, String userId, String type, String message, LocalDateTime sendDate) {
         this.id = id;
-        this.usuarioId = usuarioId;
-        this.tipo = tipo;
-        this.mensaje = mensaje;
-        this.fechaEnvio = fechaEnvio;
-        this.leida = false;
+        this.userId = userId;
+        this.type = type;
+        this.message = message;
+        this.sendDate = sendDate;
+        this.read = false;
     }
 
-    public void marcarComoLeida() {
-        this.leida = true;
+    public void markAsRead() {
+        this.read = true;
     }
 }

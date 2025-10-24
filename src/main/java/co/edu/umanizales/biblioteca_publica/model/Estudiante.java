@@ -8,23 +8,23 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Estudiante extends Usuario {
-    private String carrera;
-    private String semestre;
+public class Student extends User {
+    private String major;
+    private String semester;
 
-    public Estudiante(String id, String nombre, String apellido, String email, String telefono, String carrera, String semestre) {
-        super(id, nombre, apellido, email, telefono, UserType.ESTUDIANTE);
-        this.carrera = carrera;
-        this.semestre = semestre;
+    public Student(String id, String firstName, String lastName, String email, String phone, String major, String semester) {
+        super(id, firstName, lastName, email, phone, UserType.STUDENT);
+        this.major = major;
+        this.semester = semester;
     }
 
     @Override
-    public int getLimitePrestamos() {
+    public int getLoanLimit() {
         return 3;
     }
 
     @Override
-    public int getDiasPrestamo() {
+    public int getLoanDays() {
         return 15;
     }
 }

@@ -9,30 +9,30 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Resena {
+public class Review {
     private String id;
-    private String usuarioId;
-    private String libroId;
-    private int calificacion; // 1-5
-    private String comentario;
-    private LocalDateTime fechaCreacion;
-    private boolean aprobada;
+    private String userId;
+    private String bookId;
+    private int rating; // 1-5
+    private String comment;
+    private LocalDateTime creationDate;
+    private boolean approved;
 
-    // Composición: Reseña compuesta por Usuario y Libro
-    private Usuario usuario;
-    private Libro libro;
+    // Composition: Review composed by User and Book
+    private User user;
+    private Book book;
 
-    public Resena(String id, String usuarioId, String libroId, int calificacion, String comentario, LocalDateTime fechaCreacion) {
+    public Review(String id, String userId, String bookId, int rating, String comment, LocalDateTime creationDate) {
         this.id = id;
-        this.usuarioId = usuarioId;
-        this.libroId = libroId;
-        this.calificacion = Math.max(1, Math.min(5, calificacion)); // Validar entre 1 y 5
-        this.comentario = comentario;
-        this.fechaCreacion = fechaCreacion;
-        this.aprobada = false;
+        this.userId = userId;
+        this.bookId = bookId;
+        this.rating = Math.max(1, Math.min(5, rating)); // Validate between 1 and 5
+        this.comment = comment;
+        this.creationDate = creationDate;
+        this.approved = false;
     }
 
-    public void aprobar() {
-        this.aprobada = true;
+    public void approve() {
+        this.approved = true;
     }
 }
