@@ -1,8 +1,8 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
-import co.edu.umanizales.biblioteca_publica.model.Libro;
-import co.edu.umanizales.biblioteca_publica.model.Resena;
-import co.edu.umanizales.biblioteca_publica.model.Usuario;
+import co.edu.umanizales.biblioteca_publica.model.Book;
+import co.edu.umanizales.biblioteca_publica.model.Review;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,18 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class ResenaService {
+public class ReviewService {
     
     private final CSVService csvService;
-    private final LibroService libroService;
-    private final UsuarioService usuarioService;
-    private final Map<String, Resena> resenas = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "resenas.csv";
+    private final BookService bookService;
+    private final UserService userService;
+    private final Map<String, Review> reviews = new ConcurrentHashMap<>();
+    private static final String FILE_NAME = "reviews.csv";
 
-    public ResenaService(CSVService csvService, LibroService libroService, UsuarioService usuarioService) {
+    public ReviewService(CSVService csvService, BookService bookService, UserService userService) {
         this.csvService = csvService;
-        this.libroService = libroService;
-        this.usuarioService = usuarioService;
+        this.bookService = bookService;
+        this.userService = userService;
         loadFromCSV();
     }
 
@@ -32,147 +32,147 @@ public class ResenaService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 6) {
-                    Resena resena = new Resena(
+                    Review review = new Review(
                         row.get(0), // id
-                        row.get(1), // usuarioId
-                        row.get(2), // libroId
-                        Integer.parseInt(row.get(3)), // calificacion
-                        row.get(4), // comentario
-                        LocalDateTime.parse(row.get(5)), // fechaCreacion
-                        Boolean.parseBoolean(row.get(6)), // aprobada
-                        null, // usuario (se carga bajo demanda)
-                        null  // libro (se carga bajo demanda)
+                        row.get(1), // userId
+                        row.get(2), // bookId
+                        Integer.parseInt(row.get(3)), // rating
+                        row.get(4), // comment
+                        LocalDateTime.parse(row.get(5)), // creationDate
+                        Boolean.parseBoolean(row.get(6)), // approved
+                        null, // user (loaded on demand)
+                        null  // book (loaded on demand)
                     );
-                    resenas.put(resena.getId(), resena);
+                    reviews.put(review.getId(), review);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error al cargar reseñas desde CSV: " + e.getMessage());
+            System.err.println("Error loading reviews from CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
         try {
-            List<String> headers = Arrays.asList("id", "usuarioId", "libroId", "calificacion", 
-                "comentario", "fechaCreacion", "aprobada");
+            List<String> headers = Arrays.asList("id", "userId", "bookId", "rating", 
+                "comment", "creationDate", "approved");
             
-            List<List<String>> data = resenas.values().stream()
-                .map(resena -> Arrays.asList(
-                    resena.getId(),
-                    resena.getUsuarioId(),
-                    resena.getLibroId(),
-                    String.valueOf(resena.getCalificacion()),
-                    csvService.escapeCSV(resena.getComentario()),
-                    resena.getFechaCreacion().toString(),
-                    String.valueOf(resena.isAprobada())
+            List<List<String>> data = reviews.values().stream()
+                .map(review -> Arrays.asList(
+                    review.getId(),
+                    review.getUserId(),
+                    review.getBookId(),
+                    String.valueOf(review.getRating()),
+                    csvService.escapeCSV(review.getComment()),
+                    review.getCreationDate().toString(),
+                    String.valueOf(review.isApproved())
                 ))
                 .collect(Collectors.toList());
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
-            System.err.println("Error al guardar reseñas en CSV: " + e.getMessage());
+            System.err.println("Error saving reviews to CSV: " + e.getMessage());
         }
     }
 
-    public Resena crear(Resena resena) {
-        if (resena.getId() == null || resena.getId().isEmpty()) {
-            resena.setId(UUID.randomUUID().toString());
+    public Review create(Review review) {
+        if (review.getId() == null || review.getId().isEmpty()) {
+            review.setId(UUID.randomUUID().toString());
         }
         
-        // Composición: cargar usuario y libro
-        Optional<Usuario> usuario = usuarioService.obtenerPorId(resena.getUsuarioId());
-        Optional<Libro> libro = libroService.obtenerPorId(resena.getLibroId());
+        // Composition: load user and book
+        Optional<User> user = userService.getById(review.getUserId());
+        Optional<Book> book = bookService.getById(review.getBookId());
         
-        if (usuario.isPresent() && libro.isPresent()) {
-            resena.setUsuario(usuario.get());
-            resena.setLibro(libro.get());
+        if (user.isPresent() && book.isPresent()) {
+            review.setUser(user.get());
+            review.setBook(book.get());
         }
         
-        resenas.put(resena.getId(), resena);
+        reviews.put(review.getId(), review);
         saveToCSV();
-        return resena;
+        return review;
     }
 
-    public List<Resena> obtenerTodos() {
-        return new ArrayList<>(resenas.values());
+    public List<Review> getAll() {
+        return new ArrayList<>(reviews.values());
     }
 
-    public Optional<Resena> obtenerPorId(String id) {
-        Optional<Resena> resenaOpt = Optional.ofNullable(resenas.get(id));
+    public Optional<Review> getById(String id) {
+        Optional<Review> reviewOpt = Optional.ofNullable(reviews.get(id));
         
-        // Cargar composición
-        if (resenaOpt.isPresent()) {
-            Resena resena = resenaOpt.get();
-            cargarComposicion(resena);
+        // Load composition
+        if (reviewOpt.isPresent()) {
+            Review review = reviewOpt.get();
+            loadComposition(review);
         }
         
-        return resenaOpt;
+        return reviewOpt;
     }
 
-    private void cargarComposicion(Resena resena) {
-        if (resena.getUsuario() == null) {
-            usuarioService.obtenerPorId(resena.getUsuarioId()).ifPresent(resena::setUsuario);
+    private void loadComposition(Review review) {
+        if (review.getUser() == null) {
+            userService.getById(review.getUserId()).ifPresent(review::setUser);
         }
-        if (resena.getLibro() == null) {
-            libroService.obtenerPorId(resena.getLibroId()).ifPresent(resena::setLibro);
+        if (review.getBook() == null) {
+            bookService.getById(review.getBookId()).ifPresent(review::setBook);
         }
     }
 
-    public Resena actualizar(String id, Resena resenaActualizada) {
-        if (resenas.containsKey(id)) {
-            resenaActualizada.setId(id);
-            resenas.put(id, resenaActualizada);
+    public Review update(String id, Review updatedReview) {
+        if (reviews.containsKey(id)) {
+            updatedReview.setId(id);
+            reviews.put(id, updatedReview);
             saveToCSV();
-            return resenaActualizada;
+            return updatedReview;
         }
         return null;
     }
 
-    public boolean eliminar(String id) {
-        if (resenas.remove(id) != null) {
+    public boolean delete(String id) {
+        if (reviews.remove(id) != null) {
             saveToCSV();
             return true;
         }
         return false;
     }
 
-    public List<Resena> obtenerPorLibro(String libroId) {
-        return resenas.values().stream()
-            .filter(r -> r.getLibroId().equals(libroId))
-            .peek(this::cargarComposicion)
+    public List<Review> getByBook(String bookId) {
+        return reviews.values().stream()
+            .filter(r -> r.getBookId().equals(bookId))
+            .peek(this::loadComposition)
             .collect(Collectors.toList());
     }
 
-    public List<Resena> obtenerPorUsuario(String usuarioId) {
-        return resenas.values().stream()
-            .filter(r -> r.getUsuarioId().equals(usuarioId))
-            .peek(this::cargarComposicion)
+    public List<Review> getByUser(String userId) {
+        return reviews.values().stream()
+            .filter(r -> r.getUserId().equals(userId))
+            .peek(this::loadComposition)
             .collect(Collectors.toList());
     }
 
-    public List<Resena> obtenerAprobadas() {
-        return resenas.values().stream()
-            .filter(Resena::isAprobada)
-            .peek(this::cargarComposicion)
+    public List<Review> getApproved() {
+        return reviews.values().stream()
+            .filter(Review::isApproved)
+            .peek(this::loadComposition)
             .collect(Collectors.toList());
     }
 
-    public Resena aprobarResena(String id) {
-        Optional<Resena> resenaOpt = obtenerPorId(id);
-        if (resenaOpt.isPresent()) {
-            Resena resena = resenaOpt.get();
-            resena.aprobar();
-            resenas.put(id, resena);
+    public Review approveReview(String id) {
+        Optional<Review> reviewOpt = getById(id);
+        if (reviewOpt.isPresent()) {
+            Review review = reviewOpt.get();
+            review.approve();
+            reviews.put(id, review);
             saveToCSV();
-            return resena;
+            return review;
         }
         return null;
     }
 
-    public double obtenerCalificacionPromedioLibro(String libroId) {
-        return resenas.values().stream()
-            .filter(r -> r.getLibroId().equals(libroId) && r.isAprobada())
-            .mapToInt(Resena::getCalificacion)
+    public double getAverageRatingBook(String bookId) {
+        return reviews.values().stream()
+            .filter(r -> r.getBookId().equals(bookId) && r.isApproved())
+            .mapToInt(Review::getRating)
             .average()
             .orElse(0.0);
     }

@@ -1,7 +1,7 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
 import co.edu.umanizales.biblioteca_publica.enums.UserType;
-import co.edu.umanizales.biblioteca_publica.interfaces.Notificable;
+import co.edu.umanizales.biblioteca_publica.interfaces.Notifiable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,36 +12,36 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Usuario implements Notificable {
+public abstract class User implements Notifiable {
     private String id;
-    private String nombre;
-    private String apellido;
+    private String firstName;
+    private String lastName;
     private String email;
-    private String telefono;
-    private UserType tipo;
-    private List<String> notificaciones = new ArrayList<>();
+    private String phone;
+    private UserType type;
+    private List<String> notifications = new ArrayList<>();
 
-    public Usuario(String id, String nombre, String apellido, String email, String telefono, UserType tipo) {
+    public User(String id, String firstName, String lastName, String email, String phone, UserType type) {
         this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
-        this.telefono = telefono;
-        this.tipo = tipo;
-        this.notificaciones = new ArrayList<>();
+        this.phone = phone;
+        this.type = type;
+        this.notifications = new ArrayList<>();
     }
 
     @Override
-    public void enviarNotificacion(String mensaje) {
-        notificaciones.add(mensaje);
-        System.out.println("Notificación enviada a " + nombre + " " + apellido + ": " + mensaje);
+    public void sendNotification(String message) {
+        notifications.add(message);
+        System.out.println("Notification sent to " + firstName + " " + lastName + ": " + message);
     }
 
     @Override
-    public String getContacto() {
+    public String getContact() {
         return email;
     }
 
-    public abstract int getLimitePrestamos();
-    public abstract int getDiasPrestamo();
+    public abstract int getLoanLimit();
+    public abstract int getLoanDays();
 }

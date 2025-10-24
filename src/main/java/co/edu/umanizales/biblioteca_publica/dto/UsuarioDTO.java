@@ -1,78 +1,78 @@
 package co.edu.umanizales.biblioteca_publica.dto;
 
 import co.edu.umanizales.biblioteca_publica.enums.UserType;
-import co.edu.umanizales.biblioteca_publica.model.Administrador;
-import co.edu.umanizales.biblioteca_publica.model.Estudiante;
-import co.edu.umanizales.biblioteca_publica.model.Profesor;
-import co.edu.umanizales.biblioteca_publica.model.Usuario;
+import co.edu.umanizales.biblioteca_publica.model.Administrator;
+import co.edu.umanizales.biblioteca_publica.model.Student;
+import co.edu.umanizales.biblioteca_publica.model.Teacher;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import lombok.Data;
 
 /**
- * DTO para recibir datos de usuarios y crear instancias según el tipo.
- * Facilita la deserialización polimórfica de usuarios.
+ * DTO to receive user data and create instances according to type.
+ * Facilitates polymorphic deserialization of users.
  */
 @Data
-public class UsuarioDTO {
+public class UserDTO {
     private String id;
-    private String nombre;
-    private String apellido;
+    private String firstName;
+    private String lastName;
     private String email;
-    private String telefono;
-    private UserType tipo;
+    private String phone;
+    private UserType type;
     
-    // Campos específicos de Estudiante
-    private String carrera;
-    private String semestre;
+    // Student specific fields
+    private String major;
+    private String semester;
     
-    // Campos específicos de Profesor
-    private String departamento;
-    private String especializacion;
+    // Teacher specific fields
+    private String department;
+    private String specialization;
     
-    // Campos específicos de Administrador
-    private String rol;
-    private Boolean permisoTotal;
+    // Administrator specific fields
+    private String role;
+    private Boolean fullPermission;
 
     /**
-     * Convierte el DTO en la instancia correcta de Usuario según el tipo.
+     * Converts the DTO into the correct User instance according to type.
      */
-    public Usuario toUsuario() {
-        switch (tipo) {
-            case ESTUDIANTE:
-                return new Estudiante(id, nombre, apellido, email, telefono, carrera, semestre);
-            case PROFESOR:
-                return new Profesor(id, nombre, apellido, email, telefono, departamento, especializacion);
-            case ADMINISTRADOR:
-                return new Administrador(id, nombre, apellido, email, telefono, rol, 
-                    permisoTotal != null ? permisoTotal : false);
+    public User toUser() {
+        switch (type) {
+            case STUDENT:
+                return new Student(id, firstName, lastName, email, phone, major, semester);
+            case TEACHER:
+                return new Teacher(id, firstName, lastName, email, phone, department, specialization);
+            case ADMINISTRATOR:
+                return new Administrator(id, firstName, lastName, email, phone, role, 
+                    fullPermission != null ? fullPermission : false);
             default:
-                throw new IllegalArgumentException("Tipo de usuario no válido: " + tipo);
+                throw new IllegalArgumentException("Invalid user type: " + type);
         }
     }
 
     /**
-     * Crea un DTO desde una instancia de Usuario.
+     * Creates a DTO from a User instance.
      */
-    public static UsuarioDTO fromUsuario(Usuario usuario) {
-        UsuarioDTO dto = new UsuarioDTO();
-        dto.setId(usuario.getId());
-        dto.setNombre(usuario.getNombre());
-        dto.setApellido(usuario.getApellido());
-        dto.setEmail(usuario.getEmail());
-        dto.setTelefono(usuario.getTelefono());
-        dto.setTipo(usuario.getTipo());
+    public static UserDTO fromUser(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setType(user.getType());
         
-        if (usuario instanceof Estudiante) {
-            Estudiante est = (Estudiante) usuario;
-            dto.setCarrera(est.getCarrera());
-            dto.setSemestre(est.getSemestre());
-        } else if (usuario instanceof Profesor) {
-            Profesor prof = (Profesor) usuario;
-            dto.setDepartamento(prof.getDepartamento());
-            dto.setEspecializacion(prof.getEspecializacion());
-        } else if (usuario instanceof Administrador) {
-            Administrador admin = (Administrador) usuario;
-            dto.setRol(admin.getRol());
-            dto.setPermisoTotal(admin.isPermisoTotal());
+        if (user instanceof Student) {
+            Student student = (Student) user;
+            dto.setMajor(student.getMajor());
+            dto.setSemester(student.getSemester());
+        } else if (user instanceof Teacher) {
+            Teacher teacher = (Teacher) user;
+            dto.setDepartment(teacher.getDepartment());
+            dto.setSpecialization(teacher.getSpecialization());
+        } else if (user instanceof Administrator) {
+            Administrator admin = (Administrator) user;
+            dto.setRole(admin.getRole());
+            dto.setFullPermission(admin.isFullPermission());
         }
 
         

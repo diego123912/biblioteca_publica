@@ -1,9 +1,9 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
 import co.edu.umanizales.biblioteca_publica.enums.LoanStatus;
-import co.edu.umanizales.biblioteca_publica.model.Libro;
-import co.edu.umanizales.biblioteca_publica.model.Prestamo;
-import co.edu.umanizales.biblioteca_publica.model.Usuario;
+import co.edu.umanizales.biblioteca_publica.model.Book;
+import co.edu.umanizales.biblioteca_publica.model.Loan;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,18 +13,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class PrestamoService {
+public class LoanService {
     
     private final CSVService csvService;
-    private final LibroService libroService;
-    private final UsuarioService usuarioService;
-    private final Map<String, Prestamo> prestamos = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "prestamos.csv";
+    private final BookService bookService;
+    private final UserService userService;
+    private final Map<String, Loan> loans = new ConcurrentHashMap<>();
+    private static final String FILE_NAME = "loans.csv";
 
-    public PrestamoService(CSVService csvService, LibroService libroService, UsuarioService usuarioService) {
+    public LoanService(CSVService csvService, BookService bookService, UserService userService) {
         this.csvService = csvService;
-        this.libroService = libroService;
-        this.usuarioService = usuarioService;
+        this.bookService = bookService;
+        this.userService = userService;
         loadFromCSV();
     }
 
@@ -33,185 +33,185 @@ public class PrestamoService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 7) {
-                    Prestamo prestamo = new Prestamo(
+                    Loan loan = new Loan(
                         row.get(0), // id
-                        row.get(1), // usuarioId
-                        row.get(2), // libroId
-                        LocalDate.parse(row.get(3)), // fechaPrestamo
-                        LocalDate.parse(row.get(4)), // fechaDevolucionEstimada
-                        row.get(5).isEmpty() ? null : LocalDate.parse(row.get(5)), // fechaDevolucionReal
-                        LoanStatus.valueOf(row.get(6)), // estado
-                        row.size() > 7 ? row.get(7) : "" // observaciones
+                        row.get(1), // userId
+                        row.get(2), // bookId
+                        LocalDate.parse(row.get(3)), // loanDate
+                        LocalDate.parse(row.get(4)), // estimatedReturnDate
+                        row.get(5).isEmpty() ? null : LocalDate.parse(row.get(5)), // actualReturnDate
+                        LoanStatus.valueOf(row.get(6)), // status
+                        row.size() > 7 ? row.get(7) : "" // observations
                     );
-                    prestamos.put(prestamo.getId(), prestamo);
+                    loans.put(loan.getId(), loan);
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error al cargar préstamos desde CSV: " + e.getMessage());
+            System.err.println("Error loading loans from CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
         try {
-            List<String> headers = Arrays.asList("id", "usuarioId", "libroId", "fechaPrestamo", 
-                "fechaDevolucionEstimada", "fechaDevolucionReal", "estado", "observaciones");
+            List<String> headers = Arrays.asList("id", "userId", "bookId", "loanDate", 
+                "estimatedReturnDate", "actualReturnDate", "status", "observations");
             
-            List<List<String>> data = prestamos.values().stream()
-                .map(prestamo -> Arrays.asList(
-                    prestamo.getId(),
-                    prestamo.getUsuarioId(),
-                    prestamo.getLibroId(),
-                    prestamo.getFechaPrestamo().toString(),
-                    prestamo.getFechaDevolucionEstimada().toString(),
-                    prestamo.getFechaDevolucionReal() != null ? prestamo.getFechaDevolucionReal().toString() : "",
-                    prestamo.getEstado().toString(),
-                    prestamo.getObservaciones() != null ? prestamo.getObservaciones() : ""
+            List<List<String>> data = loans.values().stream()
+                .map(loan -> Arrays.asList(
+                    loan.getId(),
+                    loan.getUserId(),
+                    loan.getBookId(),
+                    loan.getLoanDate().toString(),
+                    loan.getEstimatedReturnDate().toString(),
+                    loan.getActualReturnDate() != null ? loan.getActualReturnDate().toString() : "",
+                    loan.getStatus().toString(),
+                    loan.getObservations() != null ? loan.getObservations() : ""
                 ))
                 .collect(Collectors.toList());
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
-            System.err.println("Error al guardar préstamos en CSV: " + e.getMessage());
+            System.err.println("Error saving loans to CSV: " + e.getMessage());
         }
     }
 
-    // Polimorfismo: método que gestiona préstamos usando el método polimórfico getDiasPrestamo()
-    public Prestamo realizarPrestamo(String usuarioId, String libroId) {
-        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(usuarioId);
-        Optional<Libro> libroOpt = libroService.obtenerPorId(libroId);
+    // Polymorphism: method that manages loans using the polymorphic getLoanDays() method
+    public Loan performLoan(String userId, String bookId) {
+        Optional<User> userOpt = userService.getById(userId);
+        Optional<Book> bookOpt = bookService.getById(bookId);
 
-        if (usuarioOpt.isEmpty() || libroOpt.isEmpty()) {
-            throw new RuntimeException("Usuario o libro no encontrado");
+        if (userOpt.isEmpty() || bookOpt.isEmpty()) {
+            throw new RuntimeException("User or book not found");
         }
 
-        Usuario usuario = usuarioOpt.get();
-        Libro libro = libroOpt.get();
+        User user = userOpt.get();
+        Book book = bookOpt.get();
 
-        if (!libro.estaDisponible()) {
-            throw new RuntimeException("Libro no disponible");
+        if (!book.isAvailable()) {
+            throw new RuntimeException("Book not available");
         }
 
-        long prestamosActivos = prestamos.values().stream()
-            .filter(p -> p.getUsuarioId().equals(usuarioId))
-            .filter(p -> p.getEstado() == LoanStatus.ACTIVO || p.getEstado() == LoanStatus.VENCIDO)
+        long activeLoans = loans.values().stream()
+            .filter(p -> p.getUserId().equals(userId))
+            .filter(p -> p.getStatus() == LoanStatus.ACTIVE || p.getStatus() == LoanStatus.OVERDUE)
             .count();
 
-        if (prestamosActivos >= usuario.getLimitePrestamos()) {
-            throw new RuntimeException("Usuario ha alcanzado el límite de préstamos");
+        if (activeLoans >= user.getLoanLimit()) {
+            throw new RuntimeException("User has reached the loan limit");
         }
 
         String id = UUID.randomUUID().toString();
-        LocalDate fechaPrestamo = LocalDate.now();
-        LocalDate fechaDevolucion = fechaPrestamo.plusDays(usuario.getDiasPrestamo()); // Polimorfismo
+        LocalDate loanDate = LocalDate.now();
+        LocalDate returnDate = loanDate.plusDays(user.getLoanDays()); // Polymorphism
 
-        Prestamo prestamo = new Prestamo(id, usuarioId, libroId, fechaPrestamo, fechaDevolucion);
-        libro.prestar();
-        libroService.actualizar(libroId, libro);
+        Loan loan = new Loan(id, userId, bookId, loanDate, returnDate);
+        book.borrow();
+        bookService.update(bookId, book);
         
-        prestamos.put(id, prestamo);
+        loans.put(id, loan);
         saveToCSV();
 
-        // Enviar notificación (Polimorfismo)
-        usuario.enviarNotificacion("Préstamo realizado: " + libro.getTitulo() + ". Fecha devolución: " + fechaDevolucion);
+        // Send notification (Polymorphism)
+        user.sendNotification("Loan performed: " + book.getTitle() + ". Return date: " + returnDate);
 
-        return prestamo;
+        return loan;
     }
 
-    // Polimorfismo: método que gestiona devoluciones
-    public Prestamo realizarDevolucion(String prestamoId) {
-        Optional<Prestamo> prestamoOpt = obtenerPorId(prestamoId);
+    // Polymorphism: method that manages returns
+    public Loan performReturn(String loanId) {
+        Optional<Loan> loanOpt = getById(loanId);
         
-        if (prestamoOpt.isEmpty()) {
-            throw new RuntimeException("Préstamo no encontrado");
+        if (loanOpt.isEmpty()) {
+            throw new RuntimeException("Loan not found");
         }
 
-        Prestamo prestamo = prestamoOpt.get();
-        Optional<Libro> libroOpt = libroService.obtenerPorId(prestamo.getLibroId());
-        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(prestamo.getUsuarioId());
+        Loan loan = loanOpt.get();
+        Optional<Book> bookOpt = bookService.getById(loan.getBookId());
+        Optional<User> userOpt = userService.getById(loan.getUserId());
 
-        if (libroOpt.isEmpty() || usuarioOpt.isEmpty()) {
-            throw new RuntimeException("Libro o usuario no encontrado");
+        if (bookOpt.isEmpty() || userOpt.isEmpty()) {
+            throw new RuntimeException("Book or user not found");
         }
 
-        Libro libro = libroOpt.get();
-        Usuario usuario = usuarioOpt.get();
+        Book book = bookOpt.get();
+        User user = userOpt.get();
 
-        prestamo.devolver();
-        libro.devolver();
-        libroService.actualizar(libro.getId(), libro);
+        loan.returnBook();
+        book.returnBook();
+        bookService.update(book.getId(), book);
         
-        prestamos.put(prestamoId, prestamo);
+        loans.put(loanId, loan);
         saveToCSV();
 
-        // Enviar notificación (Polimorfismo)
-        String mensaje = "Devolución realizada: " + libro.getTitulo();
-        if (prestamo.getDiasRetraso() > 0) {
-            mensaje += ". Días de retraso: " + prestamo.getDiasRetraso();
+        // Send notification (Polymorphism)
+        String message = "Return performed: " + book.getTitle();
+        if (loan.getDelayDays() > 0) {
+            message += ". Delay days: " + loan.getDelayDays();
         }
-        usuario.enviarNotificacion(mensaje);
+        user.sendNotification(message);
 
-        return prestamo;
+        return loan;
     }
 
-    public Prestamo crear(Prestamo prestamo) {
-        if (prestamo.getId() == null || prestamo.getId().isEmpty()) {
-            prestamo.setId(UUID.randomUUID().toString());
+    public Loan create(Loan loan) {
+        if (loan.getId() == null || loan.getId().isEmpty()) {
+            loan.setId(UUID.randomUUID().toString());
         }
-        prestamos.put(prestamo.getId(), prestamo);
+        loans.put(loan.getId(), loan);
         saveToCSV();
-        return prestamo;
+        return loan;
     }
 
-    public List<Prestamo> obtenerTodos() {
-        return new ArrayList<>(prestamos.values());
+    public List<Loan> getAll() {
+        return new ArrayList<>(loans.values());
     }
 
-    public Optional<Prestamo> obtenerPorId(String id) {
-        return Optional.ofNullable(prestamos.get(id));
+    public Optional<Loan> getById(String id) {
+        return Optional.ofNullable(loans.get(id));
     }
 
-    public Prestamo actualizar(String id, Prestamo prestamoActualizado) {
-        if (prestamos.containsKey(id)) {
-            prestamoActualizado.setId(id);
-            prestamos.put(id, prestamoActualizado);
+    public Loan update(String id, Loan updatedLoan) {
+        if (loans.containsKey(id)) {
+            updatedLoan.setId(id);
+            loans.put(id, updatedLoan);
             saveToCSV();
-            return prestamoActualizado;
+            return updatedLoan;
         }
         return null;
     }
 
-    public boolean eliminar(String id) {
-        if (prestamos.remove(id) != null) {
+    public boolean delete(String id) {
+        if (loans.remove(id) != null) {
             saveToCSV();
             return true;
         }
         return false;
     }
 
-    public List<Prestamo> obtenerPorUsuario(String usuarioId) {
-        return prestamos.values().stream()
-            .filter(p -> p.getUsuarioId().equals(usuarioId))
+    public List<Loan> getByUser(String userId) {
+        return loans.values().stream()
+            .filter(p -> p.getUserId().equals(userId))
             .collect(Collectors.toList());
     }
 
-    public List<Prestamo> obtenerPorEstado(LoanStatus estado) {
-        return prestamos.values().stream()
-            .filter(p -> p.getEstado() == estado)
+    public List<Loan> getByStatus(LoanStatus status) {
+        return loans.values().stream()
+            .filter(p -> p.getStatus() == status)
             .collect(Collectors.toList());
     }
 
-    public void verificarVencimientos() {
-        prestamos.values().forEach(prestamo -> {
-            if (prestamo.estaVencido()) {
-                prestamo.marcarVencido();
+    public void checkOverdue() {
+        loans.values().forEach(loan -> {
+            if (loan.isOverdue()) {
+                loan.markOverdue();
                 
-                Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(prestamo.getUsuarioId());
-                Optional<Libro> libroOpt = libroService.obtenerPorId(prestamo.getLibroId());
+                Optional<User> userOpt = userService.getById(loan.getUserId());
+                Optional<Book> bookOpt = bookService.getById(loan.getBookId());
                 
-                if (usuarioOpt.isPresent() && libroOpt.isPresent()) {
-                    Usuario usuario = usuarioOpt.get();
-                    Libro libro = libroOpt.get();
-                    usuario.enviarNotificacion("Préstamo vencido: " + libro.getTitulo() + ". Días de retraso: " + prestamo.getDiasRetraso());
+                if (userOpt.isPresent() && bookOpt.isPresent()) {
+                    User user = userOpt.get();
+                    Book book = bookOpt.get();
+                    user.sendNotification("Loan overdue: " + book.getTitle() + ". Delay days: " + loan.getDelayDays());
                 }
             }
         });

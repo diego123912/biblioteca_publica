@@ -9,35 +9,35 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reserva {
+public class Reservation {
     private String id;
-    private String usuarioId;
-    private String libroId;
-    private LocalDateTime fechaReserva;
-    private LocalDateTime fechaExpiracion;
-    private boolean activa;
-    private boolean completada;
+    private String userId;
+    private String bookId;
+    private LocalDateTime reservationDate;
+    private LocalDateTime expirationDate;
+    private boolean active;
+    private boolean completed;
 
-    public Reserva(String id, String usuarioId, String libroId, LocalDateTime fechaReserva, LocalDateTime fechaExpiracion) {
+    public Reservation(String id, String userId, String bookId, LocalDateTime reservationDate, LocalDateTime expirationDate) {
         this.id = id;
-        this.usuarioId = usuarioId;
-        this.libroId = libroId;
-        this.fechaReserva = fechaReserva;
-        this.fechaExpiracion = fechaExpiracion;
-        this.activa = true;
-        this.completada = false;
+        this.userId = userId;
+        this.bookId = bookId;
+        this.reservationDate = reservationDate;
+        this.expirationDate = expirationDate;
+        this.active = true;
+        this.completed = false;
     }
 
-    public boolean estaExpirada() {
-        return LocalDateTime.now().isAfter(fechaExpiracion);
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expirationDate);
     }
 
-    public void cancelar() {
-        this.activa = false;
+    public void cancel() {
+        this.active = false;
     }
 
-    public void completar() {
-        this.activa = false;
-        this.completada = true;
+    public void complete() {
+        this.active = false;
+        this.completed = true;
     }
 }

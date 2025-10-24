@@ -1,10 +1,10 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
 import co.edu.umanizales.biblioteca_publica.enums.UserType;
-import co.edu.umanizales.biblioteca_publica.model.Administrador;
-import co.edu.umanizales.biblioteca_publica.model.Estudiante;
-import co.edu.umanizales.biblioteca_publica.model.Profesor;
-import co.edu.umanizales.biblioteca_publica.model.Usuario;
+import co.edu.umanizales.biblioteca_publica.model.Administrator;
+import co.edu.umanizales.biblioteca_publica.model.Student;
+import co.edu.umanizales.biblioteca_publica.model.Teacher;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,13 +13,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioService {
+public class UserService {
     
     private final CSVService csvService;
-    private final Map<String, Usuario> usuarios = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "usuarios.csv";
+    private final Map<String, User> users = new ConcurrentHashMap<>();
+    private static final String FILE_NAME = "users.csv";
 
-    public UsuarioService(CSVService csvService) {
+    public UserService(CSVService csvService) {
         this.csvService = csvService;
         loadFromCSV();
     }
@@ -29,142 +29,142 @@ public class UsuarioService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 8) {
-                    UserType tipo = UserType.valueOf(row.get(5));
-                    Usuario usuario = null;
+                    UserType type = UserType.valueOf(row.get(5));
+                    User user = null;
                     
-                    switch (tipo) {
-                        case ESTUDIANTE:
-                            usuario = new Estudiante(
+                    switch (type) {
+                        case STUDENT:
+                            user = new Student(
                                 row.get(0), // id
-                                row.get(1), // nombre
-                                row.get(2), // apellido
+                                row.get(1), // firstName
+                                row.get(2), // lastName
                                 row.get(3), // email
-                                row.get(4), // telefono
-                                row.get(6), // carrera
-                                row.get(7)  // semestre
+                                row.get(4), // phone
+                                row.get(6), // major
+                                row.get(7)  // semester
                             );
                             break;
-                        case PROFESOR:
-                            usuario = new Profesor(
+                        case TEACHER:
+                            user = new Teacher(
                                 row.get(0), // id
-                                row.get(1), // nombre
-                                row.get(2), // apellido
+                                row.get(1), // firstName
+                                row.get(2), // lastName
                                 row.get(3), // email
-                                row.get(4), // telefono
-                                row.get(6), // departamento
-                                row.get(7)  // especializacion
+                                row.get(4), // phone
+                                row.get(6), // department
+                                row.get(7)  // specialization
                             );
                             break;
-                        case ADMINISTRADOR:
-                            usuario = new Administrador(
+                        case ADMINISTRATOR:
+                            user = new Administrator(
                                 row.get(0), // id
-                                row.get(1), // nombre
-                                row.get(2), // apellido
+                                row.get(1), // firstName
+                                row.get(2), // lastName
                                 row.get(3), // email
-                                row.get(4), // telefono
-                                row.get(6), // rol
-                                Boolean.parseBoolean(row.get(7))  // permisoTotal
+                                row.get(4), // phone
+                                row.get(6), // role
+                                Boolean.parseBoolean(row.get(7))  // fullPermission
                             );
                             break;
                     }
                     
-                    if (usuario != null) {
-                        usuarios.put(usuario.getId(), usuario);
+                    if (user != null) {
+                        users.put(user.getId(), user);
                     }
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error al cargar usuarios desde CSV: " + e.getMessage());
+            System.err.println("Error loading users from CSV: " + e.getMessage());
         }
     }
 
     private void saveToCSV() {
         try {
-            List<String> headers = Arrays.asList("id", "nombre", "apellido", "email", "telefono", 
-                "tipo", "campo1", "campo2");
+            List<String> headers = Arrays.asList("id", "firstName", "lastName", "email", "phone", 
+                "type", "field1", "field2");
             
-            List<List<String>> data = usuarios.values().stream()
-                .map(usuario -> {
-                    String campo1 = "";
-                    String campo2 = "";
+            List<List<String>> data = users.values().stream()
+                .map(user -> {
+                    String field1 = "";
+                    String field2 = "";
                     
-                    if (usuario instanceof Estudiante) {
-                        Estudiante est = (Estudiante) usuario;
-                        campo1 = est.getCarrera();
-                        campo2 = est.getSemestre();
-                    } else if (usuario instanceof Profesor) {
-                        Profesor prof = (Profesor) usuario;
-                        campo1 = prof.getDepartamento();
-                        campo2 = prof.getEspecializacion();
-                    } else if (usuario instanceof Administrador) {
-                        Administrador admin = (Administrador) usuario;
-                        campo1 = admin.getRol();
-                        campo2 = String.valueOf(admin.isPermisoTotal());
+                    if (user instanceof Student) {
+                        Student student = (Student) user;
+                        field1 = student.getMajor();
+                        field2 = student.getSemester();
+                    } else if (user instanceof Teacher) {
+                        Teacher teacher = (Teacher) user;
+                        field1 = teacher.getDepartment();
+                        field2 = teacher.getSpecialization();
+                    } else if (user instanceof Administrator) {
+                        Administrator admin = (Administrator) user;
+                        field1 = admin.getRole();
+                        field2 = String.valueOf(admin.isFullPermission());
                     }
                     
                     return Arrays.asList(
-                        usuario.getId(),
-                        usuario.getNombre(),
-                        usuario.getApellido(),
-                        usuario.getEmail(),
-                        usuario.getTelefono(),
-                        usuario.getTipo().toString(),
-                        campo1,
-                        campo2
+                        user.getId(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getPhone(),
+                        user.getType().toString(),
+                        field1,
+                        field2
                     );
                 })
                 .collect(Collectors.toList());
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
-            System.err.println("Error al guardar usuarios en CSV: " + e.getMessage());
+            System.err.println("Error saving users to CSV: " + e.getMessage());
         }
     }
 
-    public Usuario crear(Usuario usuario) {
-        if (usuario.getId() == null || usuario.getId().isEmpty()) {
-            usuario.setId(UUID.randomUUID().toString());
+    public User create(User user) {
+        if (user.getId() == null || user.getId().isEmpty()) {
+            user.setId(UUID.randomUUID().toString());
         }
-        usuarios.put(usuario.getId(), usuario);
+        users.put(user.getId(), user);
         saveToCSV();
-        return usuario;
+        return user;
     }
 
-    public List<Usuario> obtenerTodos() {
-        return new ArrayList<>(usuarios.values());
+    public List<User> getAll() {
+        return new ArrayList<>(users.values());
     }
 
-    public Optional<Usuario> obtenerPorId(String id) {
-        return Optional.ofNullable(usuarios.get(id));
+    public Optional<User> getById(String id) {
+        return Optional.ofNullable(users.get(id));
     }
 
-    public Usuario actualizar(String id, Usuario usuarioActualizado) {
-        if (usuarios.containsKey(id)) {
-            usuarioActualizado.setId(id);
-            usuarios.put(id, usuarioActualizado);
+    public User update(String id, User updatedUser) {
+        if (users.containsKey(id)) {
+            updatedUser.setId(id);
+            users.put(id, updatedUser);
             saveToCSV();
-            return usuarioActualizado;
+            return updatedUser;
         }
         return null;
     }
 
-    public boolean eliminar(String id) {
-        if (usuarios.remove(id) != null) {
+    public boolean delete(String id) {
+        if (users.remove(id) != null) {
             saveToCSV();
             return true;
         }
         return false;
     }
 
-    public List<Usuario> buscarPorTipo(UserType tipo) {
-        return usuarios.values().stream()
-            .filter(usuario -> usuario.getTipo() == tipo)
+    public List<User> searchByType(UserType type) {
+        return users.values().stream()
+            .filter(user -> user.getType() == type)
             .collect(Collectors.toList());
     }
 
-    public Optional<Usuario> buscarPorEmail(String email) {
-        return usuarios.values().stream()
-            .filter(usuario -> usuario.getEmail().equalsIgnoreCase(email))
+    public Optional<User> searchByEmail(String email) {
+        return users.values().stream()
+            .filter(user -> user.getEmail().equalsIgnoreCase(email))
             .findFirst();
     }
 }

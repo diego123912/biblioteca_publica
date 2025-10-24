@@ -10,46 +10,46 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prestamo {
+public class Loan {
     private String id;
-    private String usuarioId;
-    private String libroId;
-    private LocalDate fechaPrestamo;
-    private LocalDate fechaDevolucionEstimada;
-    private LocalDate fechaDevolucionReal;
-    private LoanStatus estado;
-    private String observaciones;
+    private String userId;
+    private String bookId;
+    private LocalDate loanDate;
+    private LocalDate estimatedReturnDate;
+    private LocalDate actualReturnDate;
+    private LoanStatus status;
+    private String observations;
 
-    public Prestamo(String id, String usuarioId, String libroId, LocalDate fechaPrestamo, LocalDate fechaDevolucionEstimada) {
+    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate) {
         this.id = id;
-        this.usuarioId = usuarioId;
-        this.libroId = libroId;
-        this.fechaPrestamo = fechaPrestamo;
-        this.fechaDevolucionEstimada = fechaDevolucionEstimada;
-        this.estado = LoanStatus.ACTIVO;
-        this.observaciones = "";
+        this.userId = userId;
+        this.bookId = bookId;
+        this.loanDate = loanDate;
+        this.estimatedReturnDate = estimatedReturnDate;
+        this.status = LoanStatus.ACTIVE;
+        this.observations = "";
     }
 
-    public boolean estaVencido() {
-        return estado == LoanStatus.ACTIVO && LocalDate.now().isAfter(fechaDevolucionEstimada);
+    public boolean isOverdue() {
+        return status == LoanStatus.ACTIVE && LocalDate.now().isAfter(estimatedReturnDate);
     }
 
-    public void devolver() {
-        this.fechaDevolucionReal = LocalDate.now();
-        this.estado = LoanStatus.FINALIZADO;
+    public void returnBook() {
+        this.actualReturnDate = LocalDate.now();
+        this.status = LoanStatus.COMPLETED;
     }
 
-    public void marcarVencido() {
-        if (estaVencido()) {
-            this.estado = LoanStatus.VENCIDO;
+    public void markOverdue() {
+        if (isOverdue()) {
+            this.status = LoanStatus.OVERDUE;
         }
     }
 
-    public long getDiasRetraso() {
-        if (fechaDevolucionReal != null) {
-            return fechaDevolucionEstimada.until(fechaDevolucionReal).getDays();
-        } else if (estaVencido()) {
-            return fechaDevolucionEstimada.until(LocalDate.now()).getDays();
+    public long getDelayDays() {
+        if (actualReturnDate != null) {
+            return estimatedReturnDate.until(actualReturnDate).getDays();
+        } else if (isOverdue()) {
+            return estimatedReturnDate.until(LocalDate.now()).getDays();
         }
         return 0;
     }

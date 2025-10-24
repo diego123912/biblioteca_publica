@@ -19,7 +19,7 @@ public class CSVService {
         try {
             Files.createDirectories(Paths.get(DATA_DIR));
         } catch (IOException e) {
-            System.err.println("Error al crear directorio de datos: " + e.getMessage());
+            System.err.println("Error creating data directory: " + e.getMessage());
         }
     }
 
@@ -27,11 +27,11 @@ public class CSVService {
         Path filePath = Paths.get(DATA_DIR + fileName);
         
         try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardCharsets.UTF_8)) {
-            // Escribir encabezados
+            // Write headers
             writer.write(String.join(",", headers));
             writer.newLine();
             
-            // Escribir datos
+            // Write data
             for (List<String> row : data) {
                 writer.write(String.join(",", row));
                 writer.newLine();
@@ -53,7 +53,7 @@ public class CSVService {
             
             while ((line = reader.readLine()) != null) {
                 if (firstLine) {
-                    firstLine = false; // Saltar encabezados
+                    firstLine = false; // Skip headers
                     continue;
                 }
                 
@@ -98,7 +98,7 @@ public class CSVService {
             return "";
         }
         
-        // Si contiene coma, comilla o salto de línea, escapar con comillas
+        // If contains comma, quote or newline, escape with quotes
         if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
