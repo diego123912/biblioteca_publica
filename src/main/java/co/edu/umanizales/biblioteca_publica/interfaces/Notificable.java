@@ -1,6 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.interfaces;
 
-public interface Notifiable {
+public interface Notificable {
     void sendNotification(String message);
     String getContact();
 }

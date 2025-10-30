@@ -1,7 +1,7 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
 import co.edu.umanizales.biblioteca_publica.enums.UserType;
-import co.edu.umanizales.biblioteca_publica.interfaces.Notifiable;
+import co.edu.umanizales.biblioteca_publica.interfaces.Notificable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class User implements Notifiable {
+public abstract class User implements Notificable {
     private String id;
     private String firstName;
     private String lastName;

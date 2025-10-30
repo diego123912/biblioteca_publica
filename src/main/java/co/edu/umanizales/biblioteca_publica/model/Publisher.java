@@ -11,8 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Publisher {
-
-
     private String id;
     private String name;
     private String country;
