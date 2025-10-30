@@ -1,0 +1,5 @@
+id,firstName,lastName,email,phone,type,field1,field2
+TCH001,Ana,Martinez,ana.martinez@example.com,3105551234,TEACHER,Department of Sciences,Quantum Physics
+STU001,Maria,Gonzalez,maria.gonzalez@example.com,3001234567,STUDENT,Systems Engineering,6
+STU002,Carlos,Rodriguez,carlos.rodriguez@example.com,3009876543,STUDENT,Medicine,3
+ADM001,Luis,Sanchez,luis.sanchez@example.com,3207778899,ADMINISTRATOR,General Administrator,true

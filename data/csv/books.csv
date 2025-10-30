@@ -1,0 +1,6 @@
+id,isbn,title,author,publisher,publicationYear,genre,availableQuantity,totalQuantity,location
+BK005,978-0-201-63361-0,Design Patterns,Gang of Four,Addison-Wesley,1994,TECHNOLOGY,3,3,Shelf C3
+BK001,978-3-16-148410-0,One Hundred Years of Solitude,Gabriel Garcia Marquez,Sudamericana Publishing,1967,FICTION,3,3,Shelf A1
+BK002,978-0-7432-7356-5,1984,George Orwell,Secker & Warburg,1949,FICTION,2,2,Shelf A2
+BK003,978-0-674-97755-4,A Brief History of Time,Stephen Hawking,Bantam Books,1988,SCIENCE,4,4,Shelf B1
+BK004,978-0-13-110362-7,Clean Code,Robert C. Martin,Prentice Hall,2008,TECHNOLOGY,5,5,Shelf C3
