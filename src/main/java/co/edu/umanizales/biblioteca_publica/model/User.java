@@ -5,7 +5,7 @@ import co.edu.umanizales.biblioteca_publica.interfaces.Notificable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import co.edu.umanizales.biblioteca_publica.enums.UserType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,16 +20,6 @@ public abstract class User implements Notificable {
     private String phone;
     private UserType type;
     private List<String> notifications = new ArrayList<>();
-
-    public User(String id, String firstName, String lastName, String email, String phone, UserType type) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.type = type;
-        this.notifications = new ArrayList<>();
-    }
 
     @Override
     public void sendNotification(String message) {

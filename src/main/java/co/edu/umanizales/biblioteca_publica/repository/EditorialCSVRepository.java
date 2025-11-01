@@ -10,13 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Repository
-public class PublisherCSVRepository implements PublisherRepository {
+public class EditorialCSVRepository implements EditorialRepository {
     
     private final CSVService csvService;
     private final Map<String, Publisher> publishers = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "publishers.csv";
+    private static final String FILE_NAME = "editorials.csv";
     
-    public PublisherCSVRepository(CSVService csvService) {
+    public EditorialCSVRepository(CSVService csvService) {
         this.csvService = csvService;
         load();
     }

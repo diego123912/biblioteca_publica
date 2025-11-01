@@ -17,15 +17,6 @@ public class Notification {
     private LocalDateTime sendDate;
     private boolean read;
 
-    public Notification(String id, String userId, String type, String message, LocalDateTime sendDate) {
-        this.id = id;
-        this.userId = userId;
-        this.type = type;
-        this.message = message;
-        this.sendDate = sendDate;
-        this.read = false;
-    }
-
     public void markAsRead() {
         this.read = true;
     }

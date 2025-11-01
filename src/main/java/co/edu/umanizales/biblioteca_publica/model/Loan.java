@@ -20,16 +20,6 @@ public class Loan {
     private LoanStatus status;
     private String observations;
 
-    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate) {
-        this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
-        this.loanDate = loanDate;
-        this.estimatedReturnDate = estimatedReturnDate;
-        this.status = LoanStatus.ACTIVE;
-        this.observations = "";
-    }
-
     public boolean isOverdue() {
         return status == LoanStatus.ACTIVE && LocalDate.now().isAfter(estimatedReturnDate);
     }

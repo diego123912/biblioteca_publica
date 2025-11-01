@@ -18,12 +18,4 @@ public class Publisher {
     private String contact;
     private List<String> bookIds = new ArrayList<>();
 
-    public Publisher(String id, String name, String country, String website, String contact) {
-        this.id = id;
-        this.name = name;
-        this.country = country;
-        this.website = website;
-        this.contact = contact;
-        this.bookIds = new ArrayList<>();
-    }
 }

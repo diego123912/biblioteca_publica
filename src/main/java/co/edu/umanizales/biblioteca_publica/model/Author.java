@@ -20,16 +20,6 @@ public class Author {
     private String biography;
     private List<String> bookIds = new ArrayList<>();
 
-    public Author(String id, String firstName, String lastName, String nationality, LocalDate birthDate, String biography) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nationality = nationality;
-        this.birthDate = birthDate;
-        this.biography = biography;
-        this.bookIds = new ArrayList<>();
-    }
-
     public String getFullName() {
         return firstName + " " + lastName;
     }

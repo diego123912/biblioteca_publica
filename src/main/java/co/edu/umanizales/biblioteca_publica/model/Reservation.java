@@ -18,16 +18,6 @@ public class Reservation {
     private boolean active;
     private boolean completed;
 
-    public Reservation(String id, String userId, String bookId, LocalDateTime reservationDate, LocalDateTime expirationDate) {
-        this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
-        this.reservationDate = reservationDate;
-        this.expirationDate = expirationDate;
-        this.active = true;
-        this.completed = false;
-    }
-
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expirationDate);
     }

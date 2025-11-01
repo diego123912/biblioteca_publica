@@ -23,18 +23,6 @@ public class Library {
     private List<Loan> loans = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
 
-    public Library(String id, String name, String address, String phone, String schedule) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.phone = phone;
-        this.schedule = schedule;
-        this.books = new ArrayList<>();
-        this.users = new ArrayList<>();
-        this.loans = new ArrayList<>();
-        this.reviews = new ArrayList<>();
-    }
-
     public void addBook(Book book) {
         books.add(book);
     }
@@ -61,7 +49,7 @@ public class Library {
 
     public int getActiveLoans() {
         return (int) loans.stream()
-                .filter(p -> p.getStatus().toString().equals("ACTIVE"))
+                .filter(loan -> loan.getStatus().toString().equals("ACTIVE"))
                 .count();
     }
 }
