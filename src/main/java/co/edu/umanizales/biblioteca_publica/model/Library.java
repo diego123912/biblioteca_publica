@@ -1,6 +1,5 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Library {
     private String id;
     private String name;
@@ -22,6 +20,18 @@ public class Library {
     private List<User> users = new ArrayList<>();
     private List<Loan> loans = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
+
+    public Library(String id, String name, String address, String phone, String schedule) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.schedule = schedule;
+        this.books = new ArrayList<>();
+        this.users = new ArrayList<>();
+        this.loans = new ArrayList<>();
+        this.reviews = new ArrayList<>();
+    }
 
     public void addBook(Book book) {
         books.add(book);

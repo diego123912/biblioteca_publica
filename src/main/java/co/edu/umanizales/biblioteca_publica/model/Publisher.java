@@ -1,6 +1,5 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Publisher {
     private String id;
     private String name;
@@ -18,4 +16,12 @@ public class Publisher {
     private String contact;
     private List<String> bookIds = new ArrayList<>();
 
+    public Publisher(String id, String name, String country, String website, String contact) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.website = website;
+        this.contact = contact;
+        this.bookIds = new ArrayList<>();
+    }
 }

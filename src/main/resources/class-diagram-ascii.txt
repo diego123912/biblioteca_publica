@@ -1,0 +1,215 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║           DIAGRAMA DE CLASES - SISTEMA DE BIBLIOTECA PÚBLICA                  ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            ENUMS (Enumeraciones)                            │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────┐      ┌──────────────────┐      ┌──────────────┐
+    │   UserType      │      │   BookGenre      │      │ LoanStatus   │
+    ├─────────────────┤      ├──────────────────┤      ├──────────────┤
+    │ STUDENT         │      │ FICTION          │      │ ACTIVE       │
+    │ TEACHER         │      │ NON_FICTION      │      │ OVERDUE      │
+    │ ADMINISTRATOR   │      │ SCIENCE          │      │ COMPLETED    │
+    └─────────────────┘      │ HISTORY          │      └──────────────┘
+                             │ TECHNOLOGY       │
+                             │ ART              │
+                             │ PHILOSOPHY       │
+                             │ BIOGRAPHY        │
+                             │ CHILDREN         │
+                             │ ACADEMIC         │
+                             └──────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           INTERFACE (Interfaz)                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────────────────────────┐
+    │      <<interface>>                       │
+    │        Notificable                       │
+    ├──────────────────────────────────────────┤
+    │ + sendNotification(message: String)      │
+    │ + getContact(): String                   │
+    └──────────────────────────────────────────┘
+                        △
+                        │ implements
+                        │
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    JERARQUÍA DE CLASES - USUARIOS                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                ┌───────────────────────────────────────────┐
+                │      <<abstract>>                         │
+                │           User                            │
+                ├───────────────────────────────────────────┤
+                │ - id: String                              │
+                │ - firstName: String                       │
+                │ - lastName: String                        │
+                │ - email: String                           │
+                │ - phone: String                           │
+                │ - type: UserType                          │
+                │ - notifications: List<String>             │
+                ├───────────────────────────────────────────┤
+                │ + sendNotification(message: String): void │
+                │ + getContact(): String                    │
+                │ + {abstract} getLoanLimit(): int          │
+                │ + {abstract} getLoanDays(): int           │
+                └───────────────────────────────────────────┘
+                                △
+                ┌───────────────┼───────────────┐
+                │               │               │
+        ┌───────┴──────┐ ┌──────┴──────┐ ┌─────┴──────────┐
+        │   Student    │ │   Teacher   │ │ Administrator  │
+        ├──────────────┤ ├─────────────┤ ├────────────────┤
+        │ - major      │ │ - department│ │ - role         │
+        │ - semester   │ │ - special.. │ │ - fullPerm..   │
+        ├──────────────┤ ├─────────────┤ ├────────────────┤
+        │ + getLoanL..│ │ + getLoanL..│ │ + getLoanL..   │
+        │   return 3   │ │   return 10 │ │   return MAX   │
+        │ + getLoanD..│ │ + getLoanD..│ │ + getLoanD..   │
+        │   return 15  │ │   return 30 │ │   return 60    │
+        └──────────────┘ └─────────────┘ └────────────────┘
+         POLIMORFISMO     POLIMORFISMO     POLIMORFISMO
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          ENTIDADES PRINCIPALES                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────┐         ┌──────────────────────────┐
+│         Book            │         │        Author            │
+├─────────────────────────┤         ├──────────────────────────┤
+│ - id: String            │         │ - id: String             │
+│ - isbn: String          │         │ - firstName: String      │
+│ - title: String         │◄────────┤ - lastName: String       │
+│ - author: String        │ writes  │ - nationality: String    │
+│ - publisher: String     │         │ - birthDate: LocalDate   │
+│ - publicationYear: int  │         │ - biography: String      │
+│ - genre: BookGenre      │         │ - bookIds: List<String>  │
+│ - availableQuantity: int│         └──────────────────────────┘
+│ - totalQuantity: int    │
+│ - location: String      │         ┌──────────────────────────┐
+├─────────────────────────┤         │       Publisher          │
+│ + isAvailable(): boolean│         ├──────────────────────────┤
+│ + borrow(): void        │         │ - id: String             │
+│ + returnBook(): void    │◄────────┤ - name: String           │
+└─────────────────────────┘publishes│ - country: String        │
+                                    │ - website: String        │
+                                    │ - contact: String        │
+                                    │ - bookIds: List<String>  │
+                                    └──────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      GESTIÓN DE PRÉSTAMOS Y RESERVAS                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────┐                ┌──────────────────────────┐
+│          Loan              │                │      Reservation         │
+├────────────────────────────┤                ├──────────────────────────┤
+│ - id: String               │                │ - id: String             │
+│ - userId: String           │────────┐       │ - userId: String         │
+│ - bookId: String           │        │       │ - bookId: String         │
+│ - loanDate: LocalDate      │        │       │ - reservationDate: Local │
+│ - estimatedReturnDate: L.. │        │       │ - expirationDate: Local  │
+│ - actualReturnDate: Local  │        │       │ - active: boolean        │
+│ - status: LoanStatus       │        │       │ - completed: boolean     │
+│ - observations: String     │        │       ├──────────────────────────┤
+├────────────────────────────┤        │       │ + isExpired(): boolean   │
+│ + isOverdue(): boolean     │        │       │ + cancel(): void         │
+│ + returnBook(): void       │        │       │ + complete(): void       │
+│ + markOverdue(): void      │        │       └──────────────────────────┘
+│ + getDelayDays(): long     │        │                    │
+└────────────────────────────┘        │                    │
+         │           │                │                    │
+         │borrows    │borrowed        │reserves            │reserved
+         ▼           ▼                ▼                    ▼
+     ┌──────┐    ┌──────┐         ┌──────┐           ┌──────┐
+     │ User │    │ Book │         │ User │           │ Book │
+     └──────┘    └──────┘         └──────┘           └──────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      RESEÑAS Y NOTIFICACIONES                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────┐              ┌──────────────────────────┐
+│         Review             │              │      Notification        │
+├────────────────────────────┤              ├──────────────────────────┤
+│ - id: String               │              │ - id: String             │
+│ - userId: String           │              │ - userId: String         │
+│ - bookId: String           │              │ - type: String           │
+│ - rating: int              │              │ - message: String        │
+│ - comment: String          │              │ - sendDate: LocalDateTime│
+│ - creationDate: LocalDate  │              │ - read: boolean          │
+│ - approved: boolean        │              ├──────────────────────────┤
+│ - user: User               │*─────┐       │ + markAsRead(): void     │
+│ - book: Book               │*────┐│       └──────────────────────────┘
+├────────────────────────────┤     ││                   │
+│ + approve(): void          │     ││                   │notifies
+└────────────────────────────┘     ││                   ▼
+      COMPOSICIÓN                  ││               ┌──────┐
+      (parte de)                   │└──────────────►│ User │
+                                   │                └──────┘
+                                   │
+                                   └───────────────►┌──────┐
+                                                    │ Book │
+                                                    └──────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        CLASE AGREGADORA - LIBRARY                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│                           Library                                    │
+├──────────────────────────────────────────────────────────────────────┤
+│ - id: String                                                         │
+│ - name: String                                                       │
+│ - address: String                                                    │
+│ - phone: String                                                      │
+│ - schedule: String                                                   │
+│ - books: List<Book>           ◄───────────────────────┐             │
+│ - users: List<User>           ◄──────────────────┐    │             │
+│ - loans: List<Loan>           ◄─────────────┐    │    │             │
+│ - reviews: List<Review>       ◄────────┐    │    │    │             │
+├──────────────────────────────────────────────────────────────────────┤
+│ + addBook(book: Book): void              │    │    │    │            │
+│ + addUser(user: User): void              │    │    │    │            │
+│ + addLoan(loan: Loan): void              │    │    │    │            │
+│ + addReview(review: Review): void        │    │    │    │            │
+│ + getTotalBooks(): int                   │    │    │    │            │
+│ + getTotalUsers(): int                   │    │    │    │            │
+│ + getActiveLoans(): int                  │    │    │    │            │
+└──────────────────────────────────────────┼────┼────┼────┼────────────┘
+                 AGREGACIÓN (contiene)     │    │    │    │
+                                           │    │    │    │
+        ┌──────────────────────────────────┘    │    │    │
+        │       ┌───────────────────────────────┘    │    │
+        │       │        ┌──────────────────────────┘    │
+        │       │        │      ┌────────────────────────┘
+        ▼       ▼        ▼      ▼
+    ┌────────┬──────┬────────┬────────┐
+    │ Review │ Loan │ User   │ Book   │
+    └────────┴──────┴────────┴────────┘
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    LEYENDA DE RELACIONES                                   ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  ──────►        Asociación (uses, references)                             ║
+║     △           Herencia / Generalización (extends)                       ║
+║  ◄─────         Implementación (implements)                               ║
+║  *─────         Composición (parte de, ciclo de vida dependiente)         ║
+║  ◄─────         Agregación (contiene, ciclo de vida independiente)        ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                    CONCEPTOS POO DEMOSTRADOS                               ║
+╠════════════════════════════════════════════════════════════════════════════╣
+║  ✓ ENCAPSULACIÓN:  Atributos privados con getters/setters                 ║
+║  ✓ HERENCIA:       User → Student, Teacher, Administrator                 ║
+║  ✓ POLIMORFISMO:   getLoanLimit(), getLoanDays() implementados diferente  ║
+║  ✓ ABSTRACCIÓN:    Clase abstracta User, Interface Notificable            ║
+║  ✓ COMPOSICIÓN:    Review compuesto por User y Book                       ║
+║  ✓ AGREGACIÓN:     Library agrega colecciones de entidades                ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+FIN DEL DIAGRAMA

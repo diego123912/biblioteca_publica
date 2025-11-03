@@ -1,7 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
 import co.edu.umanizales.biblioteca_publica.enums.LoanStatus;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,6 @@ import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Loan {
     private String id;
     private String userId;
@@ -19,6 +17,27 @@ public class Loan {
     private LocalDate actualReturnDate;
     private LoanStatus status;
     private String observations;
+
+    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate, LocalDate actualReturnDate, LoanStatus status, String observations) {
+        this.id = id;
+        this.userId = userId;
+        this.bookId = bookId;
+        this.loanDate = loanDate;
+        this.estimatedReturnDate = estimatedReturnDate;
+        this.actualReturnDate = actualReturnDate;
+        this.status = status;
+        this.observations = observations;
+    }
+
+    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate) {
+        this.id = id;
+        this.userId = userId;
+        this.bookId = bookId;
+        this.loanDate = loanDate;
+        this.estimatedReturnDate = estimatedReturnDate;
+        this.status = LoanStatus.ACTIVE;
+        this.observations = "";
+    }
 
     public boolean isOverdue() {
         return status == LoanStatus.ACTIVE && LocalDate.now().isAfter(estimatedReturnDate);

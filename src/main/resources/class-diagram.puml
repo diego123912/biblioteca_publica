@@ -1,0 +1,280 @@
+@startuml biblioteca_publica_class_diagram
+
+' Configuración de estilos
+skinparam classAttributeIconSize 0
+skinparam monochrome false
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+
+title Diagrama de Clases - Sistema de Biblioteca Pública
+
+' ========== ENUMS ==========
+package "enums" {
+    enum UserType {
+        STUDENT
+        TEACHER
+        ADMINISTRATOR
+    }
+    
+    enum BookGenre {
+        FICTION
+        NON_FICTION
+        SCIENCE
+        HISTORY
+        TECHNOLOGY
+        ART
+        PHILOSOPHY
+        BIOGRAPHY
+        CHILDREN
+        ACADEMIC
+    }
+    
+    enum LoanStatus {
+        ACTIVE
+        OVERDUE
+        COMPLETED
+    }
+}
+
+' ========== INTERFACES ==========
+package "interfaces" {
+    interface Notificable {
+        + sendNotification(message: String): void
+        + getContact(): String
+    }
+}
+
+' ========== MODEL CLASSES ==========
+package "model" {
+    
+    ' Clase abstracta User
+    abstract class User {
+        - id: String
+        - firstName: String
+        - lastName: String
+        - email: String
+        - phone: String
+        - type: UserType
+        - notifications: List<String>
+        --
+        + User(id, firstName, lastName, email, phone, type)
+        + sendNotification(message: String): void
+        + getContact(): String
+        + {abstract} getLoanLimit(): int
+        + {abstract} getLoanDays(): int
+    }
+    
+    ' Clases concretas de User
+    class Student {
+        - major: String
+        - semester: String
+        --
+        + Student(id, firstName, lastName, email, phone, major, semester)
+        + getLoanLimit(): int
+        + getLoanDays(): int
+    }
+    
+    class Teacher {
+        - department: String
+        - specialization: String
+        --
+        + Teacher(id, firstName, lastName, email, phone, department, specialization)
+        + getLoanLimit(): int
+        + getLoanDays(): int
+    }
+    
+    class Administrator {
+        - role: String
+        - fullPermission: boolean
+        --
+        + Administrator(id, firstName, lastName, email, phone, role, fullPermission)
+        + isFullPermission(): boolean
+        + getLoanLimit(): int
+        + getLoanDays(): int
+    }
+    
+    ' Clase Book
+    class Book {
+        - id: String
+        - isbn: String
+        - title: String
+        - author: String
+        - publisher: String
+        - publicationYear: int
+        - genre: BookGenre
+        - availableQuantity: int
+        - totalQuantity: int
+        - location: String
+        --
+        + isAvailable(): boolean
+        + borrow(): void
+        + returnBook(): void
+    }
+    
+    ' Clase Author
+    class Author {
+        - id: String
+        - firstName: String
+        - lastName: String
+        - nationality: String
+        - birthDate: LocalDate
+        - biography: String
+        - bookIds: List<String>
+        --
+        + getFullName(): String
+    }
+    
+    ' Clase Publisher
+    class Publisher {
+        - id: String
+        - name: String
+        - country: String
+        - website: String
+        - contact: String
+        - bookIds: List<String>
+    }
+    
+    ' Clase Loan
+    class Loan {
+        - id: String
+        - userId: String
+        - bookId: String
+        - loanDate: LocalDate
+        - estimatedReturnDate: LocalDate
+        - actualReturnDate: LocalDate
+        - status: LoanStatus
+        - observations: String
+        --
+        + isOverdue(): boolean
+        + returnBook(): void
+        + markOverdue(): void
+        + getDelayDays(): long
+    }
+    
+    ' Clase Review
+    class Review {
+        - id: String
+        - userId: String
+        - bookId: String
+        - rating: int
+        - comment: String
+        - creationDate: LocalDateTime
+        - approved: boolean
+        - user: User
+        - book: Book
+        --
+        + approve(): void
+    }
+    
+    ' Clase Reservation
+    class Reservation {
+        - id: String
+        - userId: String
+        - bookId: String
+        - reservationDate: LocalDateTime
+        - expirationDate: LocalDateTime
+        - active: boolean
+        - completed: boolean
+        --
+        + isExpired(): boolean
+        + cancel(): void
+        + complete(): void
+    }
+    
+    ' Clase Notification
+    class Notification {
+        - id: String
+        - userId: String
+        - type: String
+        - message: String
+        - sendDate: LocalDateTime
+        - read: boolean
+        --
+        + markAsRead(): void
+    }
+    
+    ' Clase Library
+    class Library {
+        - id: String
+        - name: String
+        - address: String
+        - phone: String
+        - schedule: String
+        - books: List<Book>
+        - users: List<User>
+        - loans: List<Loan>
+        - reviews: List<Review>
+        --
+        + addBook(book: Book): void
+        + addUser(user: User): void
+        + addLoan(loan: Loan): void
+        + addReview(review: Review): void
+        + getTotalBooks(): int
+        + getTotalUsers(): int
+        + getActiveLoans(): int
+    }
+}
+
+' ========== RELACIONES ==========
+
+' Herencia (Generalization)
+Student --|> User
+Teacher --|> User
+Administrator --|> User
+
+' Implementación de Interface
+User ..|> Notificable
+
+' Asociaciones con Enums
+User --> UserType : <<uses>>
+Book --> BookGenre : <<uses>>
+Loan --> LoanStatus : <<uses>>
+
+' Composición (Review es compuesto por User y Book)
+Review *-- User : composed by >
+Review *-- Book : composed by >
+
+' Agregación (Library contiene colecciones)
+Library o-- "0..*" Book : aggregates >
+Library o-- "0..*" User : aggregates >
+Library o-- "0..*" Loan : aggregates >
+Library o-- "0..*" Review : aggregates >
+
+' Asociaciones (Relaciones entre clases)
+Loan --> "1" User : borrows
+Loan --> "1" Book : borrowed
+Reservation --> "1" User : reserves
+Reservation --> "1" Book : reserved
+Notification --> "1" User : notifies
+Author --> "0..*" Book : writes
+Publisher --> "0..*" Book : publishes
+
+' Notas adicionales
+note right of User
+    **Abstract Class**
+    Implements Notificable interface
+    Demonstrates Polymorphism through
+    abstract methods getLoanLimit() 
+    and getLoanDays()
+end note
+
+note right of Review
+    **Composition Example**
+    Review is composed by
+    User and Book objects
+end note
+
+note right of Library
+    **Aggregation Example**
+    Library aggregates collections
+    of Books, Users, Loans, Reviews
+end note
+
+note bottom of Loan
+    **Association Example**
+    Uses polymorphism to call
+    User.getLoanDays() and 
+    User.sendNotification()
+end note
+
+@enduml
