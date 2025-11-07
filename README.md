@@ -53,7 +53,7 @@ biblioteca_publica/
 mvnw spring-boot:run
 ```
 
-El servidor estará disponible en: `http://localhost:8080`
+El servidor estará disponible en: `http://localhost:8070`
 
 ## 📡 Endpoints API
 

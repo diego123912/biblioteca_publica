@@ -1,5 +1,0 @@
-id,nombre,apellido,email,telefono,tipo,campo1,campo2
-PROF001,Ana,Martínez,ana.martinez@example.com,3105551234,PROFESOR,Departamento de Ciencias,Física Cuántica
-EST002,Carlos,Rodríguez,carlos.rodriguez@example.com,3009876543,ESTUDIANTE,Medicina,3
-ADM001,Luis,Sánchez,luis.sanchez@example.com,3207778899,ADMINISTRADOR,Administrador General,true
-EST001,María,González,maria.gonzalez@example.com,3001234567,ESTUDIANTE,Ingeniería de Sistemas,6

@@ -15,8 +15,6 @@ public class Review {
     private String comment;
     private LocalDateTime creationDate;
     private boolean approved;
-
-    // Composition: Review composed by User and Book
     private User user;
     private Book book;
 

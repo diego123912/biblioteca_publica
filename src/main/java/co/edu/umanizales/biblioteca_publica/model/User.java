@@ -16,7 +16,7 @@ public abstract class User implements Notificable {
     private String email;
     private String phone;
     private UserType type;
-    private List<String> notifications = new ArrayList<>();
+    private List<Notification> notifications = new ArrayList<>();
 
     public User(String id, String firstName, String lastName, String email, String phone, UserType type) {
         this.id = id;
@@ -30,7 +30,6 @@ public abstract class User implements Notificable {
 
     @Override
     public void sendNotification(String message) {
-        notifications.add(message);
         System.out.println("Notification sent to " + firstName + " " + lastName + ": " + message);
     }
 

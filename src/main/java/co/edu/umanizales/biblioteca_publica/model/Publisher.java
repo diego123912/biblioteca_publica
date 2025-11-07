@@ -14,7 +14,7 @@ public class Publisher {
     private String country;
     private String website;
     private String contact;
-    private List<String> bookIds = new ArrayList<>();
+    private List<Book> books = new ArrayList<>();
 
     public Publisher(String id, String name, String country, String website, String contact) {
         this.id = id;
@@ -22,6 +22,6 @@ public class Publisher {
         this.country = country;
         this.website = website;
         this.contact = contact;
-        this.bookIds = new ArrayList<>();
+        this.books = new ArrayList<>();
     }
 }

@@ -8,7 +8,7 @@ mvnw spring-boot:run
 
 O desde tu IDE, ejecuta la clase `BibliotecaPublicaApplication.java`
 
-La API estará disponible en: **http://localhost:8080**
+La API estará disponible en: **http://localhost:8070**
 
 ## 📊 Datos de Prueba Precargados
 
@@ -32,25 +32,25 @@ Al iniciar, la aplicación carga automáticamente:
 ### 1. Listar todos los libros
 
 ```http
-GET http://localhost:8080/api/libros
+GET http://localhost:8070/api/libros
 ```
 
 ### 2. Obtener un libro específico
 
 ```http
-GET http://localhost:8080/api/libros/LIB001
+GET http://localhost:8070/api/libros/LIB001
 ```
 
 ### 3. Buscar libros por título
 
 ```http
-GET http://localhost:8080/api/libros/buscar/titulo?titulo=clean
+GET http://localhost:8070/api/libros/buscar/titulo?titulo=clean
 ```
 
 ### 4. Crear un nuevo libro
 
 ```http
-POST http://localhost:8080/api/libros
+POST http://localhost:8070/api/libros
 Content-Type: application/json
 
 {
@@ -69,13 +69,13 @@ Content-Type: application/json
 ### 5. Listar todos los usuarios
 
 ```http
-GET http://localhost:8080/api/usuarios
+GET http://localhost:8070/api/usuarios
 ```
 
 ### 6. Crear un nuevo estudiante
 
 ```http
-POST http://localhost:8080/api/usuarios
+POST http://localhost:8070/api/usuarios
 Content-Type: application/json
 
 {
@@ -92,7 +92,7 @@ Content-Type: application/json
 ### 7. Crear un nuevo profesor
 
 ```http
-POST http://localhost:8080/api/usuarios
+POST http://localhost:8070/api/usuarios
 Content-Type: application/json
 
 {
@@ -109,7 +109,7 @@ Content-Type: application/json
 ### 8. Realizar un préstamo (Polimorfismo en acción)
 
 ```http
-POST http://localhost:8080/api/prestamos/realizar
+POST http://localhost:8070/api/prestamos/realizar
 Content-Type: application/json
 
 {
@@ -127,7 +127,7 @@ Content-Type: application/json
 ### 9. Realizar préstamo con profesor (diferente plazo)
 
 ```http
-POST http://localhost:8080/api/prestamos/realizar
+POST http://localhost:8070/api/prestamos/realizar
 Content-Type: application/json
 
 {
@@ -141,13 +141,13 @@ Content-Type: application/json
 ### 10. Listar préstamos de un usuario
 
 ```http
-GET http://localhost:8080/api/prestamos/usuario/EST001
+GET http://localhost:8070/api/prestamos/usuario/EST001
 ```
 
 ### 11. Devolver un libro
 
 ```http
-POST http://localhost:8080/api/prestamos/{id}/devolver
+POST http://localhost:8070/api/prestamos/{id}/devolver
 ```
 
 Reemplaza `{id}` con el ID del préstamo obtenido en el paso 8.
@@ -155,7 +155,7 @@ Reemplaza `{id}` con el ID del préstamo obtenido en el paso 8.
 ### 12. Crear una reseña (Composición)
 
 ```http
-POST http://localhost:8080/api/resenas
+POST http://localhost:8070/api/resenas
 Content-Type: application/json
 
 {
@@ -170,25 +170,25 @@ Content-Type: application/json
 ### 13. Obtener reseñas de un libro
 
 ```http
-GET http://localhost:8080/api/resenas/libro/LIB001
+GET http://localhost:8070/api/resenas/libro/LIB001
 ```
 
 ### 14. Aprobar una reseña
 
 ```http
-POST http://localhost:8080/api/resenas/{id}/aprobar
+POST http://localhost:8070/api/resenas/{id}/aprobar
 ```
 
 ### 15. Obtener calificación promedio de un libro
 
 ```http
-GET http://localhost:8080/api/resenas/libro/LIB001/calificacion-promedio
+GET http://localhost:8070/api/resenas/libro/LIB001/calificacion-promedio
 ```
 
 ### 16. Crear un autor
 
 ```http
-POST http://localhost:8080/api/autores
+POST http://localhost:8070/api/autores
 Content-Type: application/json
 
 {
@@ -203,7 +203,7 @@ Content-Type: application/json
 ### 17. Crear una reserva
 
 ```http
-POST http://localhost:8080/api/reservas
+POST http://localhost:8070/api/reservas
 Content-Type: application/json
 
 {
@@ -217,19 +217,19 @@ Content-Type: application/json
 ### 18. Verificar préstamos vencidos
 
 ```http
-POST http://localhost:8080/api/prestamos/verificar-vencimientos
+POST http://localhost:8070/api/prestamos/verificar-vencimientos
 ```
 
 ### 19. Buscar usuarios por tipo
 
 ```http
-GET http://localhost:8080/api/usuarios/tipo/ESTUDIANTE
+GET http://localhost:8070/api/usuarios/tipo/ESTUDIANTE
 ```
 
 ### 20. Filtrar préstamos por estado
 
 ```http
-GET http://localhost:8080/api/prestamos/estado/ACTIVO
+GET http://localhost:8070/api/prestamos/estado/ACTIVO
 ```
 
 ## 🎯 Conceptos POO Demostrados

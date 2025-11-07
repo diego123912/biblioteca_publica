@@ -1,6 +1,5 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Reservation {
     private String id;
     private String userId;
@@ -17,6 +15,16 @@ public class Reservation {
     private LocalDateTime expirationDate;
     private boolean active;
     private boolean completed;
+
+    public Reservation(String id, String userId, String bookId, LocalDateTime reservationDate, LocalDateTime expirationDate, boolean active, boolean completed) {
+        this.id = id;
+        this.userId = userId;
+        this.bookId = bookId;
+        this.reservationDate = reservationDate;
+        this.expirationDate = expirationDate;
+        this.active = active;
+        this.completed = completed;
+    }
 
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expirationDate);
