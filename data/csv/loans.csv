@@ -1,0 +1,3 @@
+id,userId,bookId,loanDate,estimatedReturnDate,actualReturnDate,status,observations
+adb271f5-27ef-48e5-b303-4965ee80271d,USER001,BOOK001,2025-10-07,2025-11-20,,ACTIVE,
+40fdc551-967d-476a-b548-2eaa4781e71e,USER001,BOOK001,2025-11-06,2025-11-20,,ACTIVE,
