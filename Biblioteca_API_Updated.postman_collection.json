@@ -1,0 +1,701 @@
+{
+	"info": {
+		"name": "Biblioteca Pública API - ACTUALIZADA",
+		"description": "API REST para gestión de biblioteca digital - Puerto 8070 - Endpoints actualizados 2025",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8070",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Get All Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/books"
+					}
+				},
+				{
+					"name": "Get Book by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/books/BOOK001"
+					}
+				},
+				{
+					"name": "Create Book",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"978-0-307-47424-7\",\n  \"title\": \"Clean Code\",\n  \"author\": \"Robert C. Martin\",\n  \"publisher\": \"Prentice Hall\",\n  \"publicationYear\": 2008,\n  \"genre\": \"TECHNOLOGY\",\n  \"availableQuantity\": 5,\n  \"totalQuantity\": 5,\n  \"location\": \"Shelf A1\"\n}"
+						},
+						"url": "{{baseUrl}}/api/books"
+					}
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isbn\": \"978-0-307-47424-7\",\n  \"title\": \"Clean Code - Updated Edition\",\n  \"author\": \"Robert C. Martin\",\n  \"publisher\": \"Prentice Hall\",\n  \"publicationYear\": 2008,\n  \"genre\": \"TECHNOLOGY\",\n  \"availableQuantity\": 6,\n  \"totalQuantity\": 6,\n  \"location\": \"Shelf A1\"\n}"
+						},
+						"url": "{{baseUrl}}/api/books/BOOK001"
+					}
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/books/BOOK001"
+					}
+				},
+				{
+					"name": "Search by Title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/books/search/title?title=clean"
+					}
+				},
+				{
+					"name": "Search by Author",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/books/search/author?author=martin"
+					}
+				},
+				{
+					"name": "Search by Genre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/books/search/genre/TECHNOLOGY"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/users"
+					}
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/users/USER001"
+					}
+				},
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"phone\": \"3001234567\",\n  \"type\": \"STUDENT\",\n  \"career\": \"Computer Science\",\n  \"semester\": \"5\"\n}"
+						},
+						"url": "{{baseUrl}}/api/users"
+					}
+				},
+				{
+					"name": "Create Professor",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"María\",\n  \"lastName\": \"García\",\n  \"email\": \"maria.garcia@example.com\",\n  \"phone\": \"3009876543\",\n  \"type\": \"PROFESSOR\",\n  \"department\": \"Engineering\",\n  \"specialization\": \"Software Engineering\"\n}"
+						},
+						"url": "{{baseUrl}}/api/users"
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Juan\",\n  \"lastName\": \"Pérez Updated\",\n  \"email\": \"juan.perez.updated@example.com\",\n  \"phone\": \"3001234567\",\n  \"type\": \"STUDENT\",\n  \"career\": \"Computer Science\",\n  \"semester\": \"6\"\n}"
+						},
+						"url": "{{baseUrl}}/api/users/USER001"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/users/USER001"
+					}
+				},
+				{
+					"name": "Search by Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/users/type/STUDENT"
+					}
+				},
+				{
+					"name": "Search by Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/users/search/email?email=juan.perez@example.com"
+					}
+				}
+			]
+		},
+		{
+			"name": "Loans",
+			"item": [
+				{
+					"name": "Get All Loans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans"
+					}
+				},
+				{
+					"name": "Get Loan by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/LOAN001"
+					}
+				},
+				{
+					"name": "Create Loan",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"loanDate\": \"2025-11-06\",\n  \"estimatedReturnDate\": \"2025-11-20\",\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": "{{baseUrl}}/api/loans"
+					}
+				},
+				{
+					"name": "Perform Loan (Simplified)",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\"\n}"
+						},
+						"url": "{{baseUrl}}/api/loans/perform"
+					}
+				},
+				{
+					"name": "Return Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/LOAN001/return"
+					}
+				},
+				{
+					"name": "Update Loan",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"loanDate\": \"2025-11-06\",\n  \"estimatedReturnDate\": \"2025-11-25\",\n  \"status\": \"ACTIVE\",\n  \"notes\": \"Extended loan period\"\n}"
+						},
+						"url": "{{baseUrl}}/api/loans/LOAN001"
+					}
+				},
+				{
+					"name": "Delete Loan",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/LOAN001"
+					}
+				},
+				{
+					"name": "Get Loans by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/user/USER001"
+					}
+				},
+				{
+					"name": "Get Loans by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/status/ACTIVE"
+					}
+				},
+				{
+					"name": "Check Overdue Loans",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/loans/check-overdue"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews"
+					}
+				},
+				{
+					"name": "Get Review by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/REV001"
+					}
+				},
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"rating\": 5,\n  \"comment\": \"Excellent book! Highly recommended.\",\n  \"createdAt\": \"2025-11-06T21:00:00\"\n}"
+						},
+						"url": "{{baseUrl}}/api/reviews"
+					}
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"rating\": 4,\n  \"comment\": \"Very good book (updated review)\",\n  \"createdAt\": \"2025-11-06T21:00:00\",\n  \"approved\": true\n}"
+						},
+						"url": "{{baseUrl}}/api/reviews/REV001"
+					}
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/REV001"
+					}
+				},
+				{
+					"name": "Get Reviews by Book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/book/BOOK001"
+					}
+				},
+				{
+					"name": "Get Reviews by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/user/USER001"
+					}
+				},
+				{
+					"name": "Get Approved Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/approved"
+					}
+				},
+				{
+					"name": "Approve Review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/REV001/approve"
+					}
+				},
+				{
+					"name": "Get Average Rating",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reviews/book/BOOK001/average-rating"
+					}
+				}
+			]
+		},
+		{
+			"name": "Authors",
+			"item": [
+				{
+					"name": "Get All Authors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/authors"
+					}
+				},
+				{
+					"name": "Get Author by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/authors/AUTH001"
+					}
+				},
+				{
+					"name": "Create Author",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Robert\",\n  \"lastName\": \"Martin\",\n  \"nationality\": \"American\",\n  \"birthDate\": \"1952-12-05\",\n  \"biography\": \"Software engineer and author\"\n}"
+						},
+						"url": "{{baseUrl}}/api/authors"
+					}
+				},
+				{
+					"name": "Update Author",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Robert\",\n  \"lastName\": \"C. Martin\",\n  \"nationality\": \"American\",\n  \"birthDate\": \"1952-12-05\",\n  \"biography\": \"Software engineer, author and consultant known as Uncle Bob\"\n}"
+						},
+						"url": "{{baseUrl}}/api/authors/AUTH001"
+					}
+				},
+				{
+					"name": "Delete Author",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/authors/AUTH001"
+					}
+				},
+				{
+					"name": "Search Author by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/authors/search?name=martin"
+					}
+				}
+			]
+		},
+		{
+			"name": "Publishers",
+			"item": [
+				{
+					"name": "Get All Publishers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/publishers"
+					}
+				},
+				{
+					"name": "Get Publisher by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/publishers/PUB001"
+					}
+				},
+				{
+					"name": "Create Publisher",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Prentice Hall\",\n  \"country\": \"USA\",\n  \"website\": \"https://www.pearson.com\",\n  \"contact\": \"contact@pearson.com\"\n}"
+						},
+						"url": "{{baseUrl}}/api/publishers"
+					}
+				},
+				{
+					"name": "Update Publisher",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Prentice Hall (Pearson)\",\n  \"country\": \"USA\",\n  \"website\": \"https://www.pearson.com\",\n  \"contact\": \"info@pearson.com\"\n}"
+						},
+						"url": "{{baseUrl}}/api/publishers/PUB001"
+					}
+				},
+				{
+					"name": "Delete Publisher",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/publishers/PUB001"
+					}
+				},
+				{
+					"name": "Search Publisher by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/publishers/search?name=prentice"
+					}
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get All Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications"
+					}
+				},
+				{
+					"name": "Get Notification by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications/NOT001"
+					}
+				},
+				{
+					"name": "Create Notification",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"type\": \"REMINDER\",\n  \"message\": \"Your loan is due tomorrow\",\n  \"sentDate\": \"2025-11-06T21:00:00\"\n}"
+						},
+						"url": "{{baseUrl}}/api/notifications"
+					}
+				},
+				{
+					"name": "Update Notification",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"type\": \"REMINDER\",\n  \"message\": \"Your loan is due today - URGENT\",\n  \"sentDate\": \"2025-11-06T21:00:00\",\n  \"read\": true\n}"
+						},
+						"url": "{{baseUrl}}/api/notifications/NOT001"
+					}
+				},
+				{
+					"name": "Delete Notification",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications/NOT001"
+					}
+				},
+				{
+					"name": "Get Notifications by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications/user/USER001"
+					}
+				},
+				{
+					"name": "Get Unread Notifications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications/user/USER001/unread"
+					}
+				},
+				{
+					"name": "Mark as Read",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/notifications/NOT001/mark-read"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reservations",
+			"item": [
+				{
+					"name": "Get All Reservations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations"
+					}
+				},
+				{
+					"name": "Get Reservation by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/RES001"
+					}
+				},
+				{
+					"name": "Create Reservation",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"reservationDate\": \"2025-11-06T21:00:00\",\n  \"expirationDate\": \"2025-11-08T21:00:00\"\n}"
+						},
+						"url": "{{baseUrl}}/api/reservations"
+					}
+				},
+				{
+					"name": "Update Reservation",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"USER001\",\n  \"bookId\": \"BOOK001\",\n  \"reservationDate\": \"2025-11-06T21:00:00\",\n  \"expirationDate\": \"2025-11-09T21:00:00\",\n  \"active\": true\n}"
+						},
+						"url": "{{baseUrl}}/api/reservations/RES001"
+					}
+				},
+				{
+					"name": "Delete Reservation",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/RES001"
+					}
+				},
+				{
+					"name": "Get Reservations by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/user/USER001"
+					}
+				},
+				{
+					"name": "Get Active Reservations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/active"
+					}
+				},
+				{
+					"name": "Cancel Reservation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/RES001/cancel"
+					}
+				},
+				{
+					"name": "Complete Reservation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "{{baseUrl}}/api/reservations/RES001/complete"
+					}
+				}
+			]
+		},
+		{
+			"name": "Libraries",
+			"item": [
+				{
+					"name": "Get All Libraries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/libraries"
+					}
+				},
+				{
+					"name": "Get Library by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/libraries/LIB001"
+					}
+				},
+				{
+					"name": "Create Library",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Central Library\",\n  \"address\": \"123 Main Street\",\n  \"phone\": \"3001234567\",\n  \"schedule\": \"Monday to Saturday 8:00-18:00\"\n}"
+						},
+						"url": "{{baseUrl}}/api/libraries"
+					}
+				},
+				{
+					"name": "Update Library",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Central Library - Updated\",\n  \"address\": \"123 Main Street, Downtown\",\n  \"phone\": \"3001234567\",\n  \"schedule\": \"Monday to Sunday 7:00-20:00\"\n}"
+						},
+						"url": "{{baseUrl}}/api/libraries/LIB001"
+					}
+				},
+				{
+					"name": "Delete Library",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/libraries/LIB001"
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,247 @@
+═══════════════════════════════════════════════════════════
+  GUÍA PARA EJECUTAR LA API EN POSTMAN
+═══════════════════════════════════════════════════════════
+
+🚀 PASO 1: INICIAR LA APLICACIÓN
+─────────────────────────────────────────────────────────
+
+Opción A - Desde tu IDE (Recomendado):
+1. Abre el proyecto en IntelliJ IDEA o tu IDE preferido
+2. Navega a: src/main/java/co/edu/umanizales/biblioteca_publica/BibliotecaPublicaApplication.java
+3. Click derecho → Run 'BibliotecaPublicaApplication'
+
+Opción B - Desde la terminal:
+1. Abre PowerShell o CMD en la carpeta del proyecto
+2. Ejecuta: .\mvnw.cmd spring-boot:run
+
+La aplicación estará disponible en: http://localhost:8070
+
+
+📦 PASO 2: VERIFICAR QUE LA API ESTÁ CORRIENDO
+─────────────────────────────────────────────────────────
+
+Verás en la consola:
+- "Loading initial data..."
+- "✓ Initial data loaded successfully"
+- "Started BibliotecaPublicaApplication in X seconds"
+
+
+📮 PASO 3: PROBAR EN POSTMAN
+─────────────────────────────────────────────────────────
+
+═══ PRUEBA BÁSICA 1: Listar todos los libros ═══
+
+Método: GET
+URL: http://localhost:8070/api/books
+
+
+Respuesta esperada: Array con 5 libros precargados
+
+
+═══ PRUEBA BÁSICA 2: Obtener un libro específico ═══
+
+Método: GET
+URL: http://localhost:8070/api/books/BK001
+
+Respuesta esperada: Detalles del libro "One Hundred Years of Solitude"
+
+
+═══ PRUEBA BÁSICA 3: Crear un nuevo libro ═══
+
+Método: POST
+URL: http://localhost:8070/api/books
+Headers: 
+  Content-Type: application/json
+
+Body (JSON):
+{
+  "isbn": "978-0-307-47424-7",
+  "title": "The Little Prince",
+  "author": "Antoine de Saint-Exupéry",
+  "publisher": "Gallimard",
+  "publicationYear": 1943,
+  "genre": "FICTION",
+  "availableQuantity": 4,
+  "totalQuantity": 4,
+  "location": "Shelf A5"
+}
+
+
+═══ PRUEBA BÁSICA 4: Listar todos los usuarios ═══
+
+Método: GET
+URL: http://localhost:8070/api/users
+
+Respuesta esperada: Array con 4 usuarios precargados
+- STU001: Maria Gonzalez (Estudiante)
+- STU002: Carlos Rodriguez (Estudiante)
+- TCH001: Ana Martinez (Profesor)
+- ADM001: Luis Sanchez (Administrador)
+
+
+═══ PRUEBA AVANZADA 5: Realizar un préstamo (Polimorfismo) ═══
+
+Método: POST
+URL: http://localhost:8070/api/loans/perform
+Headers:
+  Content-Type: application/json
+
+Body (JSON):
+{
+  "userId": "STU001",
+  "bookId": "BK001"
+}
+
+Nota: El sistema calculará automáticamente la fecha de devolución:
+- Estudiante (STU001): 15 días
+- Profesor (TCH001): 30 días
+- Administrador (ADM001): 60 días
+
+
+═══ PRUEBA AVANZADA 6: Crear una reseña ═══
+
+Método: POST
+URL: http://localhost:8070/api/reviews
+Headers:
+  Content-Type: application/json
+
+Body (JSON):
+{
+  "userId": "STU001",
+  "bookId": "BK001",
+  "rating": 5,
+  "comment": "Una obra maestra de la literatura latinoamericana",
+  "creationDate": "2025-11-06T20:00:00"
+}
+
+
+📚 ENDPOINTS DISPONIBLES
+─────────────────────────────────────────────────────────
+
+LIBROS (/api/books):
+✓ GET    /api/books                           - Listar todos
+✓ GET    /api/books/{id}                      - Obtener por ID
+✓ POST   /api/books                           - Crear nuevo
+✓ PUT    /api/books/{id}                      - Actualizar
+✓ DELETE /api/books/{id}                      - Eliminar
+✓ GET    /api/books/search/title?title=xxx    - Buscar por título
+✓ GET    /api/books/search/author?author=xxx  - Buscar por autor
+✓ GET    /api/books/search/genre/{genre}      - Buscar por género
+
+USUARIOS (/api/users):
+✓ GET    /api/users                           - Listar todos
+✓ GET    /api/users/{id}                      - Obtener por ID
+✓ POST   /api/users                           - Crear nuevo
+✓ PUT    /api/users/{id}                      - Actualizar
+✓ DELETE /api/users/{id}                      - Eliminar
+✓ GET    /api/users/type/{type}               - Buscar por tipo
+✓ GET    /api/users/search/email?email=xxx    - Buscar por email
+
+PRÉSTAMOS (/api/loans):
+✓ GET    /api/loans                           - Listar todos
+✓ GET    /api/loans/{id}                      - Obtener por ID
+✓ POST   /api/loans/perform                   - Realizar préstamo
+✓ POST   /api/loans/{id}/return               - Devolver libro
+✓ GET    /api/loans/user/{userId}             - Préstamos de usuario
+✓ GET    /api/loans/status/{status}           - Filtrar por estado
+✓ POST   /api/loans/check-overdue             - Verificar vencidos
+
+RESEÑAS (/api/reviews):
+✓ GET    /api/reviews                         - Listar todas
+✓ GET    /api/reviews/{id}                    - Obtener por ID
+✓ POST   /api/reviews                         - Crear nueva
+✓ PUT    /api/reviews/{id}                    - Actualizar
+✓ DELETE /api/reviews/{id}                    - Eliminar
+✓ GET    /api/reviews/book/{bookId}           - Reseñas de libro
+✓ GET    /api/reviews/user/{userId}           - Reseñas de usuario
+✓ POST   /api/reviews/{id}/approve            - Aprobar reseña
+✓ GET    /api/reviews/book/{id}/average-rating - Calificación promedio
+
+RESERVAS (/api/reservations):
+✓ GET    /api/reservations                    - Listar todas
+✓ GET    /api/reservations/{id}               - Obtener por ID
+✓ POST   /api/reservations                    - Crear nueva
+✓ GET    /api/reservations/user/{userId}      - Reservas de usuario
+✓ GET    /api/reservations/active             - Solo activas
+✓ POST   /api/reservations/{id}/cancel        - Cancelar
+✓ POST   /api/reservations/{id}/complete      - Completar
+
+
+📁 IMPORTAR COLECCIÓN EN POSTMAN
+─────────────────────────────────────────────────────────
+
+También puedes importar la colección preconfigurada:
+
+1. Abre Postman
+2. Click en "Import"
+3. Selecciona el archivo: Biblioteca_API.postman_collection.json
+4. Todas las peticiones estarán listas para usar
+
+
+⚙️ DATOS DE REFERENCIA
+─────────────────────────────────────────────────────────
+
+GÉNEROS DE LIBROS:
+- FICTION
+- SCIENCE
+- TECHNOLOGY
+- HISTORY
+- BIOGRAPHY
+- SELF_HELP
+- CHILDRENS
+- POETRY
+
+TIPOS DE USUARIO:
+- STUDENT
+- TEACHER
+- ADMINISTRATOR
+
+ESTADOS DE PRÉSTAMO:
+- ACTIVE
+- OVERDUE
+- COMPLETED
+
+
+💡 TIPS IMPORTANTES
+─────────────────────────────────────────────────────────
+
+1. Para peticiones POST/PUT, no olvides el header:
+   Content-Type: application/json
+
+2. Los IDs de los datos precargados son:
+   - Usuarios: STU001, STU002, TCH001, ADM001
+   - Libros: BK001, BK002, BK003, BK004, BK005
+
+3. El polimorfismo se ve en acción al realizar préstamos:
+   Cada tipo de usuario tiene diferentes límites y plazos
+
+4. Los datos se guardan automáticamente en archivos CSV
+   en la carpeta: data/csv/
+
+
+🔧 SOLUCIÓN DE PROBLEMAS
+─────────────────────────────────────────────────────────
+
+❌ Error "Connection refused":
+   → La aplicación no está corriendo, iníciala primero
+
+❌ Error 404:
+   → Verifica la URL correcta: http://localhost:8070/api/...
+
+❌ Error 400 "Bad Request":
+   → Verifica que el JSON esté bien formado
+   → Verifica que tengas el header Content-Type
+
+❌ Puerto 8070 ocupado:
+   → Cambia el puerto en: src/main/resources/application.properties
+   → Edita: server.port=8070 (cámbialo a 8071, 8072, etc.)
+
+
+📚 MÁS INFORMACIÓN
+─────────────────────────────────────────────────────────
+
+- README.md - Documentación completa del proyecto
+- API_TESTING_GUIDE.md - Guía detallada de pruebas
+- POSTMAN_QUICK_START.md - Guía rápida de Postman
+
+═══════════════════════════════════════════════════════════
