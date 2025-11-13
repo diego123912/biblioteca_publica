@@ -1,0 +1,92 @@
+{
+  "info": {
+    "name": "Public Library API - Complete CRUD",
+    "description": "Full CRUD operations for all entities in English",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "📚 BOOKS",
+      "item": [
+        {"name": "READ - Get All Books", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/books", "host": ["localhost"], "port": "8070", "path": ["api", "books"]}}},
+        {"name": "READ - Get Book by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/books/BK001", "host": ["localhost"], "port": "8070", "path": ["api", "books", "BK001"]}}},
+        {"name": "READ - Search by Title", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/books/search/title?title=solitude", "host": ["localhost"], "port": "8070", "path": ["api", "books", "search", "title"], "query": [{"key": "title", "value": "solitude"}]}}},
+        {"name": "READ - Search by Author", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/books/search/author?author=Garcia", "host": ["localhost"], "port": "8070", "path": ["api", "books", "search", "author"], "query": [{"key": "author", "value": "Garcia"}]}}},
+        {"name": "CREATE - Add New Book", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"isbn\": \"978-0-307-47424-7\",\"title\": \"The Little Prince\",\"author\": \"Antoine de Saint-Exupéry\",\"publisher\": \"Gallimard\",\"publicationYear\": 1943,\"genre\": \"FICTION\",\"availableQuantity\": 5,\"totalQuantity\": 5,\"location\": \"Shelf A5\"}"}, "url": {"raw": "{{base_url}}/api/books", "host": ["localhost"], "port": "8070", "path": ["api", "books"]}}},
+        {"name": "UPDATE - Modify Book", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"isbn\": \"978-0-307-47424-7\",\"title\": \"The Little Prince - Special Edition\",\"author\": \"Antoine de Saint-Exupéry\",\"publisher\": \"Gallimard\",\"publicationYear\": 1943,\"genre\": \"FICTION\",\"availableQuantity\": 6,\"totalQuantity\": 6,\"location\": \"Shelf A6\"}"}, "url": {"raw": "{{base_url}}/api/books/BK001", "host": ["localhost"], "port": "8070", "path": ["api", "books", "BK001"]}}},
+        {"name": "DELETE - Remove Book", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/books/BK001", "host": ["localhost"], "port": "8070", "path": ["api", "books", "BK001"]}}}
+      ]
+    },
+    {
+      "name": "👥 USERS",
+      "item": [
+        {"name": "READ - Get All Users", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/users", "host": ["localhost"], "port": "8070", "path": ["api", "users"]}}},
+        {"name": "READ - Get User by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/users/STU001", "host": ["localhost"], "port": "8070", "path": ["api", "users", "STU001"]}}},
+        {"name": "READ - Get Users by Type", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/users/type/STUDENT", "host": ["localhost"], "port": "8070", "path": ["api", "users", "type", "STUDENT"]}}},
+        {"name": "CREATE - Add Student", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Pedro\",\"lastName\": \"Lopez\",\"email\": \"pedro.lopez@example.com\",\"phone\": \"3001112233\",\"type\": \"STUDENT\",\"career\": \"Law\",\"semester\": \"4\"}"}, "url": {"raw": "{{base_url}}/api/users", "host": ["localhost"], "port": "8070", "path": ["api", "users"]}}},
+        {"name": "CREATE - Add Teacher", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Laura\",\"lastName\": \"Ramirez\",\"email\": \"laura.ramirez@example.com\",\"phone\": \"3002223344\",\"type\": \"TEACHER\",\"department\": \"Mathematics\",\"specialization\": \"Linear Algebra\"}"}, "url": {"raw": "{{base_url}}/api/users", "host": ["localhost"], "port": "8070", "path": ["api", "users"]}}},
+        {"name": "CREATE - Add Administrator", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Juan\",\"lastName\": \"Garcia\",\"email\": \"juan.garcia@example.com\",\"phone\": \"3003334455\",\"type\": \"ADMINISTRATOR\",\"department\": \"Library\",\"accessLevel\": \"FULL\"}"}, "url": {"raw": "{{base_url}}/api/users", "host": ["localhost"], "port": "8070", "path": ["api", "users"]}}},
+        {"name": "UPDATE - Modify User", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Pedro\",\"lastName\": \"Lopez\",\"email\": \"pedro.updated@example.com\",\"phone\": \"3001112233\",\"type\": \"STUDENT\",\"career\": \"Law\",\"semester\": \"5\"}"}, "url": {"raw": "{{base_url}}/api/users/STU001", "host": ["localhost"], "port": "8070", "path": ["api", "users", "STU001"]}}},
+        {"name": "DELETE - Remove User", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/users/STU001", "host": ["localhost"], "port": "8070", "path": ["api", "users", "STU001"]}}}
+      ]
+    },
+    {
+      "name": "📖 LOANS",
+      "item": [
+        {"name": "READ - Get All Loans", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/loans", "host": ["localhost"], "port": "8070", "path": ["api", "loans"]}}},
+        {"name": "READ - Get Loan by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/loans/1", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "1"]}}},
+        {"name": "READ - Get Loans by User", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/loans/user/STU001", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "user", "STU001"]}}},
+        {"name": "READ - Get Loans by Status", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/loans/status/ACTIVE", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "status", "ACTIVE"]}}},
+        {"name": "CREATE - Loan for Student (15 days)", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"STU001\",\"bookId\": \"BK001\"}"}, "url": {"raw": "{{base_url}}/api/loans/perform", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "perform"]}}},
+        {"name": "CREATE - Loan for Teacher (30 days)", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"TCH001\",\"bookId\": \"BK002\"}"}, "url": {"raw": "{{base_url}}/api/loans/perform", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "perform"]}}},
+        {"name": "CREATE - Loan for Admin (60 days)", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"ADM001\",\"bookId\": \"BK003\"}"}, "url": {"raw": "{{base_url}}/api/loans/perform", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "perform"]}}},
+        {"name": "UPDATE - Return Book", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": ""}, "url": {"raw": "{{base_url}}/api/loans/1/return", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "1", "return"]}}},
+        {"name": "UPDATE - Check Overdue", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": ""}, "url": {"raw": "{{base_url}}/api/loans/check-overdue", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "check-overdue"]}}},
+        {"name": "DELETE - Cancel Loan", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/loans/1", "host": ["localhost"], "port": "8070", "path": ["api", "loans", "1"]}}}
+      ]
+    },
+    {
+      "name": "⭐ REVIEWS",
+      "item": [
+        {"name": "READ - Get All Reviews", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reviews", "host": ["localhost"], "port": "8070", "path": ["api", "reviews"]}}},
+        {"name": "READ - Get Review by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reviews/1", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "1"]}}},
+        {"name": "READ - Get Reviews by Book", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reviews/book/BK001", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "book", "BK001"]}}},
+        {"name": "READ - Get Average Rating", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reviews/book/BK001/average-rating", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "book", "BK001", "average-rating"]}}},
+        {"name": "CREATE - Add Review", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"STU001\",\"bookId\": \"BK001\",\"rating\": 5,\"comment\": \"Excellent book!\",\"creationDate\": \"2025-11-06T20:00:00\"}"}, "url": {"raw": "{{base_url}}/api/reviews", "host": ["localhost"], "port": "8070", "path": ["api", "reviews"]}}},
+        {"name": "UPDATE - Approve Review", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": ""}, "url": {"raw": "{{base_url}}/api/reviews/1/approve", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "1", "approve"]}}},
+        {"name": "UPDATE - Edit Review", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"STU001\",\"bookId\": \"BK001\",\"rating\": 4,\"comment\": \"Good book\",\"creationDate\": \"2025-11-06T20:00:00\"}"}, "url": {"raw": "{{base_url}}/api/reviews/1", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "1"]}}},
+        {"name": "DELETE - Remove Review", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/reviews/1", "host": ["localhost"], "port": "8070", "path": ["api", "reviews", "1"]}}}
+      ]
+    },
+    {
+      "name": "📅 RESERVATIONS",
+      "item": [
+        {"name": "READ - Get All Reservations", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reservations", "host": ["localhost"], "port": "8070", "path": ["api", "reservations"]}}},
+        {"name": "READ - Get Reservation by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reservations/1", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "1"]}}},
+        {"name": "READ - Get Active Reservations", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reservations/active", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "active"]}}},
+        {"name": "READ - Get by User", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/reservations/user/STU002", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "user", "STU002"]}}},
+        {"name": "CREATE - Add Reservation", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"STU002\",\"bookId\": \"BK003\",\"reservationDate\": \"2025-11-06T20:00:00\",\"expirationDate\": \"2025-11-08T20:00:00\"}"}, "url": {"raw": "{{base_url}}/api/reservations", "host": ["localhost"], "port": "8070", "path": ["api", "reservations"]}}},
+        {"name": "UPDATE - Modify Reservation", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"userId\": \"STU002\",\"bookId\": \"BK003\",\"reservationDate\": \"2025-11-06T20:00:00\",\"expirationDate\": \"2025-11-10T20:00:00\"}"}, "url": {"raw": "{{base_url}}/api/reservations/1", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "1"]}}},
+        {"name": "UPDATE - Cancel Reservation", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": ""}, "url": {"raw": "{{base_url}}/api/reservations/1/cancel", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "1", "cancel"]}}},
+        {"name": "DELETE - Remove Reservation", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/reservations/1", "host": ["localhost"], "port": "8070", "path": ["api", "reservations", "1"]}}}
+      ]
+    },
+    {
+      "name": "✍️ AUTHORS",
+      "item": [
+        {"name": "READ - Get All Authors", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/authors", "host": ["localhost"], "port": "8070", "path": ["api", "authors"]}}},
+        {"name": "READ - Get Author by ID", "request": {"method": "GET", "header": [{"key": "Accept", "value": "application/json"}], "url": {"raw": "{{base_url}}/api/authors/1", "host": ["localhost"], "port": "8070", "path": ["api", "authors", "1"]}}},
+        {"name": "CREATE - Add Author", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Isabel\",\"lastName\": \"Allende\",\"nationality\": \"Chilean\",\"birthDate\": \"1942-08-02\",\"biography\": \"Chilean writer and important figure in Latin American literature.\"}"}, "url": {"raw": "{{base_url}}/api/authors", "host": ["localhost"], "port": "8070", "path": ["api", "authors"]}}},
+        {"name": "UPDATE - Modify Author", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"firstName\": \"Isabel\",\"lastName\": \"Allende\",\"nationality\": \"Chilean\",\"birthDate\": \"1942-08-02\",\"biography\": \"Chilean writer. Author of The House of the Spirits.\"}"}, "url": {"raw": "{{base_url}}/api/authors/1", "host": ["localhost"], "port": "8070", "path": ["api", "authors", "1"]}}},
+        {"name": "DELETE - Remove Author", "request": {"method": "DELETE", "url": {"raw": "{{base_url}}/api/authors/1", "host": ["localhost"], "port": "8070", "path": ["api", "authors", "1"]}}}
+      ]
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8070", "type": "string"},
+    {"key": "student_id", "value": "STU001", "type": "string"},
+    {"key": "teacher_id", "value": "TCH001", "type": "string"},
+    {"key": "admin_id", "value": "ADM001", "type": "string"},
+    {"key": "book_id", "value": "BK001", "type": "string"}
+  ]
+}

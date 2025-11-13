@@ -1,0 +1,2 @@
+id,userId,bookId,reservationDate,expirationDate,active,completed
+3b2e2399-bced-49f0-a524-31895b76d8c3,USER001,BOOK001,2025-11-06T21:00,2025-11-08T21:00,false,false

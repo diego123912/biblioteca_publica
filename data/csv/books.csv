@@ -1,4 +1,5 @@
 id,isbn,title,author,publisher,publicationYear,genre,availableQuantity,totalQuantity,location
+7da1c508-1a5d-4898-b8b0-ef8c2bbf2749,999-0-397-47424-7,The Little Prince,Antoine de Saint-Exupéry,Gallimard,1943,FICTION,5,5,Shelf A5
 c9a3b3c9-2eb6-4ea6-af9d-e991efabf3ee,999-0-307-47424-7,Era lunes cuando cayo del cielo,Diego Gaitan Arias,Prentice Hall,2007,HISTORY,6,6,Shelf A1
 BK005,978-0-201-63361-0,Design Patterns,Gang of Four,Addison-Wesley,1994,TECHNOLOGY,3,3,Shelf C3
 1d9d82d0-b39f-44b5-98eb-81be86b43366,978-0-307-47424-7,Era lunes cuando cayo del cielo,Diego Gaitan Arias,Prentice Hall,2007,HISTORY,6,6,Shelf A1
