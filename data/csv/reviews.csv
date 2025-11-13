@@ -1,0 +1,2 @@
+id,userId,bookId,rating,comment,creationDate,approved
+54e39bb3-8c18-4e7d-9a11-9f1f86fc2798,STU001,BK001,5,Excellent book!,2025-11-06T20:00,false

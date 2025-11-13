@@ -3,7 +3,7 @@ id,isbn,title,author,publisher,publicationYear,genre,availableQuantity,totalQuan
 c9a3b3c9-2eb6-4ea6-af9d-e991efabf3ee,999-0-307-47424-7,Era lunes cuando cayo del cielo,Diego Gaitan Arias,Prentice Hall,2007,HISTORY,6,6,Shelf A1
 BK005,978-0-201-63361-0,Design Patterns,Gang of Four,Addison-Wesley,1994,TECHNOLOGY,3,3,Shelf C3
 1d9d82d0-b39f-44b5-98eb-81be86b43366,978-0-307-47424-7,Era lunes cuando cayo del cielo,Diego Gaitan Arias,Prentice Hall,2007,HISTORY,6,6,Shelf A1
-BK001,978-3-16-148410-0,One Hundred Years of Solitude,Gabriel Garcia Marquez,Sudamericana Publishing,1967,FICTION,3,3,Shelf A1
-BK002,978-0-7432-7356-5,1984,George Orwell,Secker & Warburg,1949,FICTION,2,2,Shelf A2
-BK003,978-0-674-97755-4,A Brief History of Time,Stephen Hawking,Bantam Books,1988,SCIENCE,4,4,Shelf B1
+BK001,978-3-16-148410-0,One Hundred Years of Solitude,Gabriel Garcia Marquez,Sudamericana Publishing,1967,FICTION,2,3,Shelf A1
+BK002,978-0-7432-7356-5,1984,George Orwell,Secker & Warburg,1949,FICTION,1,2,Shelf A2
+BK003,978-0-674-97755-4,A Brief History of Time,Stephen Hawking,Bantam Books,1988,SCIENCE,3,4,Shelf B1
 BK004,978-0-13-110362-7,Clean Code,Robert C. Martin,Prentice Hall,2008,TECHNOLOGY,5,5,Shelf C3
