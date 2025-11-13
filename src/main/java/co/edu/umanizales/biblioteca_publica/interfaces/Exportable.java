@@ -6,4 +6,5 @@ public interface Exportable<T> {
     String toCSV();
     T fromCSV(String csvLine);
     List<String> getCSVHeaders();
+
 }

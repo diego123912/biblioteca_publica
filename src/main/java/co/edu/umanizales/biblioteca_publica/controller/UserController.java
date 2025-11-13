@@ -23,10 +23,17 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody UserDTO userDTO) {
-        User user = userDTO.toUser();
-        User newUser = userService.create(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody UserDTO userDTO) {
+        try {
+            User user = userDTO.toUser();
+            User newUser = userService.create(user);
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        } catch (IllegalArgumentException error) {
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception error) {
+            return new ResponseEntity<>("Internal server error: " + error.getMessage(), 
+                HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping

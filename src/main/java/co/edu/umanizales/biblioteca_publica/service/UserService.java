@@ -90,15 +90,15 @@ public class UserService {
                     
                     if (user instanceof Student) {
                         Student student = (Student) user;
-                        field1 = student.getMajor();
-                        field2 = student.getSemester();
+                        field1 = student.getMajor() != null ? student.getMajor() : "";
+                        field2 = student.getSemester() != null ? student.getSemester() : "";
                     } else if (user instanceof Teacher) {
                         Teacher teacher = (Teacher) user;
-                        field1 = teacher.getDepartment();
-                        field2 = teacher.getSpecialization();
+                        field1 = teacher.getDepartment() != null ? teacher.getDepartment() : "";
+                        field2 = teacher.getSpecialization() != null ? teacher.getSpecialization() : "";
                     } else if (user instanceof Administrator) {
                         Administrator admin = (Administrator) user;
-                        field1 = admin.getRole();
+                        field1 = admin.getRole() != null ? admin.getRole() : "";
                         field2 = String.valueOf(admin.isFullPermission());
                     }
                     
@@ -107,7 +107,7 @@ public class UserService {
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail(),
-                        user.getPhone(),
+                        user.getPhone() != null ? user.getPhone() : "",
                         user.getType().toString(),
                         field1,
                         field2
@@ -125,6 +125,15 @@ public class UserService {
         if (user.getId() == null || user.getId().isEmpty()) {
             user.setId(UUID.randomUUID().toString());
         }
+        
+        // Validate required fields
+        validateUser(user);
+        
+        // Check if email already exists
+        if (isEmailDuplicate(user.getEmail())) {
+            throw new IllegalArgumentException("Email already exists: " + user.getEmail());
+        }
+        
         users.put(user.getId(), user);
         saveToCSV();
         return user;
@@ -166,5 +175,40 @@ public class UserService {
         return users.values().stream()
             .filter(user -> user.getEmail().equalsIgnoreCase(email))
             .findFirst();
+    }
+    
+    // Helper method to check if email is duplicate
+    private boolean isEmailDuplicate(String email) {
+        for (User user : users.values()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Helper method to validate user data
+    private void validateUser(User user) {
+        // Check required fields are not empty
+        if (user.getFirstName() == null || user.getFirstName().trim().isEmpty()) {
+            throw new IllegalArgumentException("First name is required");
+        }
+        if (user.getLastName() == null || user.getLastName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name is required");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        
+        // Check email format
+        if (!isValidEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format: " + user.getEmail());
+        }
+    }
+    
+    // Helper method to validate email format
+    private boolean isValidEmail(String email) {
+        // Simple email validation: must contain @ and .
+        return email.contains("@") && email.contains(".") && email.indexOf("@") < email.lastIndexOf(".");
     }
 }

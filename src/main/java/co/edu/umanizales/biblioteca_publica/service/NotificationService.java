@@ -67,6 +67,10 @@ public class NotificationService {
         if (notification.getId() == null || notification.getId().isEmpty()) {
             notification.setId(UUID.randomUUID().toString());
         }
+        
+        // Validate notification data
+        validateNotification(notification);
+        
         notifications.put(notification.getId(), notification);
         saveToCSV();
         return notification;
@@ -122,5 +126,19 @@ public class NotificationService {
             return notification;
         }
         return null;
+    }
+    
+    // Helper method to validate notification data
+    private void validateNotification(Notification notification) {
+        // Check required fields are not empty
+        if (notification.getUserId() == null || notification.getUserId().trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+        if (notification.getType() == null || notification.getType().trim().isEmpty()) {
+            throw new IllegalArgumentException("Type is required");
+        }
+        if (notification.getMessage() == null || notification.getMessage().trim().isEmpty()) {
+            throw new IllegalArgumentException("Message is required");
+        }
     }
 }

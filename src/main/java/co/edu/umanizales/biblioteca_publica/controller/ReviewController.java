@@ -22,9 +22,16 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<Review> create(@RequestBody Review review) {
-        Review newReview = reviewService.create(review);
-        return new ResponseEntity<>(newReview, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody Review review) {
+        try {
+            Review newReview = reviewService.create(review);
+            return new ResponseEntity<>(newReview, HttpStatus.CREATED);
+        } catch (IllegalArgumentException error) {
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception error) {
+            return new ResponseEntity<>("Internal server error: " + error.getMessage(), 
+                HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping

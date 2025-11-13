@@ -81,6 +81,15 @@ public class BookService {
             if (book.getId() == null || book.getId().isEmpty()) {
                 book.setId(UUID.randomUUID().toString());
             }
+            
+            // Validate book data
+            validateBook(book);
+            
+            // Check if ISBN already exists
+            if (isISBNDuplicate(book.getIsbn())) {
+                throw new IllegalArgumentException("ISBN already exists: " + book.getIsbn());
+            }
+            
             books.put(book.getId(), book);
             saveToCSV();
             return book;
@@ -133,5 +142,52 @@ public class BookService {
         return books.values().stream()
             .filter(book -> book.getGenre() == genre)
             .collect(Collectors.toList());
+    }
+    
+    // Helper method to check if ISBN is duplicate
+    private boolean isISBNDuplicate(String isbn) {
+        for (Book book : books.values()) {
+            if (book.getIsbn().equalsIgnoreCase(isbn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Helper method to validate book data
+    private void validateBook(Book book) {
+        // Check required fields are not empty
+        if (book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
+            throw new IllegalArgumentException("ISBN is required");
+        }
+        if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+            throw new IllegalArgumentException("Title is required");
+        }
+        if (book.getAuthor() == null || book.getAuthor().trim().isEmpty()) {
+            throw new IllegalArgumentException("Author is required");
+        }
+        
+        // Check ISBN format (basic: 10 or 13 digits)
+        String isbnDigits = book.getIsbn().replaceAll("[^0-9]", "");
+        if (isbnDigits.length() != 10 && isbnDigits.length() != 13) {
+            throw new IllegalArgumentException("ISBN must be 10 or 13 digits");
+        }
+        
+        // Check publication year is valid
+        int currentYear = java.time.Year.now().getValue();
+        if (book.getPublicationYear() < 1000 || book.getPublicationYear() > currentYear) {
+            throw new IllegalArgumentException("Invalid publication year: " + book.getPublicationYear());
+        }
+        
+        // Check quantities are valid
+        if (book.getTotalQuantity() < 0) {
+            throw new IllegalArgumentException("Total quantity cannot be negative");
+        }
+        if (book.getAvailableQuantity() < 0) {
+            throw new IllegalArgumentException("Available quantity cannot be negative");
+        }
+        if (book.getAvailableQuantity() > book.getTotalQuantity()) {
+            throw new IllegalArgumentException("Available quantity cannot exceed total quantity");
+        }
     }
 }

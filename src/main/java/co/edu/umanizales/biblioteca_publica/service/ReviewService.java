@@ -79,14 +79,27 @@ public class ReviewService {
             review.setId(UUID.randomUUID().toString());
         }
         
+        // Validate review data
+        validateReview(review);
+        
+        // Check if user already reviewed this book
+        if (hasUserReviewedBook(review.getUserId(), review.getBookId())) {
+            throw new IllegalArgumentException("User already reviewed this book");
+        }
+        
         // Composition: load user and book
         Optional<User> user = userService.getById(review.getUserId());
         Optional<Book> book = bookService.getById(review.getBookId());
         
-        if (user.isPresent() && book.isPresent()) {
-            review.setUser(user.get());
-            review.setBook(book.get());
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found: " + review.getUserId());
         }
+        if (book.isEmpty()) {
+            throw new IllegalArgumentException("Book not found: " + review.getBookId());
+        }
+        
+        review.setUser(user.get());
+        review.setBook(book.get());
         
         reviews.put(review.getId(), review);
         saveToCSV();
@@ -175,5 +188,34 @@ public class ReviewService {
             .mapToInt(Review::getRating)
             .average()
             .orElse(0.0);
+    }
+    
+    // Helper method to check if user already reviewed a book
+    private boolean hasUserReviewedBook(String userId, String bookId) {
+        for (Review review : reviews.values()) {
+            if (review.getUserId().equals(userId) && review.getBookId().equals(bookId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Helper method to validate review data
+    private void validateReview(Review review) {
+        // Check required fields are not empty
+        if (review.getUserId() == null || review.getUserId().trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID is required");
+        }
+        if (review.getBookId() == null || review.getBookId().trim().isEmpty()) {
+            throw new IllegalArgumentException("Book ID is required");
+        }
+        if (review.getComment() == null || review.getComment().trim().isEmpty()) {
+            throw new IllegalArgumentException("Comment is required");
+        }
+        
+        // Check rating is in valid range (1-5)
+        if (review.getRating() < 1 || review.getRating() > 5) {
+            throw new IllegalArgumentException("Rating must be between 1 and 5");
+        }
     }
 }

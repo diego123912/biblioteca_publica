@@ -21,9 +21,16 @@ public class NotificationController {
     }
 
     @PostMapping
-    public ResponseEntity<Notification> create(@RequestBody Notification notification) {
-        Notification newNotification = notificationService.create(notification);
-        return new ResponseEntity<>(newNotification, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody Notification notification) {
+        try {
+            Notification newNotification = notificationService.create(notification);
+            return new ResponseEntity<>(newNotification, HttpStatus.CREATED);
+        } catch (IllegalArgumentException error) {
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception error) {
+            return new ResponseEntity<>("Internal server error: " + error.getMessage(), 
+                HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping

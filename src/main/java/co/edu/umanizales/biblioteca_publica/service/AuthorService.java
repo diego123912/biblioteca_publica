@@ -68,6 +68,15 @@ public class AuthorService {
         if (author.getId() == null || author.getId().isEmpty()) {
             author.setId(UUID.randomUUID().toString());
         }
+        
+        // Validate author data
+        validateAuthor(author);
+        
+        // Check if author name already exists
+        if (isAuthorNameDuplicate(author.getFirstName(), author.getLastName())) {
+            throw new IllegalArgumentException("Author already exists: " + author.getFirstName() + " " + author.getLastName());
+        }
+        
         authors.put(author.getId(), author);
         saveToCSV();
         return author;
@@ -104,5 +113,38 @@ public class AuthorService {
             .filter(author -> author.getFirstName().toLowerCase().contains(name.toLowerCase()) ||
                            author.getLastName().toLowerCase().contains(name.toLowerCase()))
             .collect(Collectors.toList());
+    }
+    
+    // Helper method to check if author name is duplicate
+    private boolean isAuthorNameDuplicate(String firstName, String lastName) {
+        for (Author author : authors.values()) {
+            if (author.getFirstName().equalsIgnoreCase(firstName) && 
+                author.getLastName().equalsIgnoreCase(lastName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Helper method to validate author data
+    private void validateAuthor(Author author) {
+        // Check required fields are not empty
+        if (author.getFirstName() == null || author.getFirstName().trim().isEmpty()) {
+            throw new IllegalArgumentException("First name is required");
+        }
+        if (author.getLastName() == null || author.getLastName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name is required");
+        }
+        if (author.getNationality() == null || author.getNationality().trim().isEmpty()) {
+            throw new IllegalArgumentException("Nationality is required");
+        }
+        if (author.getBirthDate() == null) {
+            throw new IllegalArgumentException("Birth date is required");
+        }
+        
+        // Check birth date is not in the future
+        if (author.getBirthDate().isAfter(java.time.LocalDate.now())) {
+            throw new IllegalArgumentException("Birth date cannot be in the future");
+        }
     }
 }

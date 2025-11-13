@@ -36,6 +36,10 @@ public class UserDTO {
      * Converts the DTO into the correct User instance according to type.
      */
     public User toUser() {
+        if (type == null) {
+            throw new IllegalArgumentException("User type is required. Please specify type: STUDENT, TEACHER, or ADMINISTRATOR");
+        }
+        
         switch (type) {
             case STUDENT:
                 return new Student(id, firstName, lastName, email, phone, major, semester);
