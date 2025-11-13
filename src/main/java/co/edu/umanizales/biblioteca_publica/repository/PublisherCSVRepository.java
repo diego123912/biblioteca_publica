@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Repository
 public class PublisherCSVRepository implements PublisherRepository {
@@ -46,15 +45,16 @@ public class PublisherCSVRepository implements PublisherRepository {
         try {
             List<String> headers = Arrays.asList("id", "name", "country", "website", "contact");
             
-            List<List<String>> data = publishers.values().stream()
-                .map(publisher -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Publisher publisher : publishers.values()) {
+                data.add(Arrays.asList(
                     publisher.getId(),
                     publisher.getName(),
                     publisher.getCountry(),
                     publisher.getWebsite(),
                     publisher.getContact()
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -78,8 +78,8 @@ public class PublisherCSVRepository implements PublisherRepository {
     }
     
     @Override
-    public Optional<Publisher> getById(String id) {
-        return Optional.ofNullable(publishers.get(id));
+    public Publisher getById(String id) {
+        return publishers.get(id);
     }
     
     @Override
@@ -104,8 +104,12 @@ public class PublisherCSVRepository implements PublisherRepository {
     
     @Override
     public List<Publisher> searchByName(String name) {
-        return publishers.values().stream()
-            .filter(publisher -> publisher.getName().toLowerCase().contains(name.toLowerCase()))
-            .collect(Collectors.toList());
+        List<Publisher> result = new ArrayList<>();
+        for (Publisher publisher : publishers.values()) {
+            if (publisher.getName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(publisher);
+            }
+        }
+        return result;
     }
 }

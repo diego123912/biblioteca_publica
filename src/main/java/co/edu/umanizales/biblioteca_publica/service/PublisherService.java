@@ -5,7 +5,6 @@ import co.edu.umanizales.biblioteca_publica.repository.PublisherRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PublisherService {
@@ -24,7 +23,7 @@ public class PublisherService {
         return publisherRepository.getAll();
     }
 
-    public Optional<Publisher> getById(String id) {
+    public Publisher getById(String id) {
         return publisherRepository.getById(id);
     }
 

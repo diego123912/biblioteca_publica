@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -40,9 +39,11 @@ public class NotificationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Notification> getById(@PathVariable String id) {
-        Optional<Notification> notification = notificationService.getById(id);
-        return notification.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Notification notification = notificationService.getById(id);
+        if (notification != null) {
+            return ResponseEntity.ok(notification);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

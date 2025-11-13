@@ -1,7 +1,9 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
 import co.edu.umanizales.biblioteca_publica.enums.BookGenre;
+import co.edu.umanizales.biblioteca_publica.model.Author;
 import co.edu.umanizales.biblioteca_publica.model.Book;
+import co.edu.umanizales.biblioteca_publica.model.Publisher;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -9,17 +11,20 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class BookService {
     
     private final CSVService csvService;
+    private final AuthorService authorService;
+    private final PublisherService publisherService;
     private final Map<String, Book> books = new ConcurrentHashMap<>();
     private static final String FILE_NAME = "books.csv";
 
-    public BookService(CSVService csvService) {
+    public BookService(CSVService csvService, AuthorService authorService, PublisherService publisherService) {
         this.csvService = csvService;
+        this.authorService = authorService;
+        this.publisherService = publisherService;
         loadFromCSV();
     }
 
@@ -28,19 +33,27 @@ public class BookService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 10) {
-                    Book book = new Book(
-                        row.get(0), // id
-                        row.get(1), // isbn
-                        row.get(2), // title
-                        row.get(3), // author
-                        row.get(4), // publisher
-                        Integer.parseInt(row.get(5)), // publicationYear
-                        BookGenre.valueOf(row.get(6)), // genre
-                        Integer.parseInt(row.get(7)), // availableQuantity
-                        Integer.parseInt(row.get(8)), // totalQuantity
-                        row.get(9)  // location
-                    );
-                    books.put(book.getId(), book);
+                    String authorId = row.get(3);
+                    String publisherId = row.get(4);
+                    
+                    Author author = authorService.getById(authorId);
+                    Publisher publisher = publisherService.getById(publisherId);
+                    
+                    if (author != null && publisher != null) {
+                        Book book = new Book(
+                            row.get(0), // id
+                            row.get(1), // isbn
+                            row.get(2), // title
+                            author, // author
+                            publisher, // publisher
+                            Integer.parseInt(row.get(5)), // publicationYear
+                            BookGenre.valueOf(row.get(6)), // genre
+                            Integer.parseInt(row.get(7)), // availableQuantity
+                            Integer.parseInt(row.get(8)), // totalQuantity
+                            row.get(9)  // location
+                        );
+                        books.put(book.getId(), book);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -55,20 +68,21 @@ public class BookService {
             List<String> headers = Arrays.asList("id", "isbn", "title", "author", "publisher", 
                 "publicationYear", "genre", "availableQuantity", "totalQuantity", "location");
             
-            List<List<String>> data = books.values().stream()
-                .map(book -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Book book : books.values()) {
+                data.add(Arrays.asList(
                     book.getId(),
                     book.getIsbn(),
                     book.getTitle(),
-                    book.getAuthor(),
-                    book.getPublisher(),
+                    book.getAuthor() != null ? book.getAuthor().getId() : "",
+                    book.getPublisher() != null ? book.getPublisher().getId() : "",
                     String.valueOf(book.getPublicationYear()),
                     book.getGenre().toString(),
                     String.valueOf(book.getAvailableQuantity()),
                     String.valueOf(book.getTotalQuantity()),
                     book.getLocation()
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -104,8 +118,8 @@ public class BookService {
         return new ArrayList<>(books.values());
     }
 
-    public Optional<Book> getById(String id) {
-        return Optional.ofNullable(books.get(id));
+    public Book getById(String id) {
+        return books.get(id);
     }
 
     public Book update(String id, Book updatedBook) {
@@ -127,21 +141,36 @@ public class BookService {
     }
 
     public List<Book> searchByTitle(String title) {
-        return books.values().stream()
-            .filter(book -> book.getTitle().toLowerCase().contains(title.toLowerCase()))
-            .collect(Collectors.toList());
+        List<Book> result = new ArrayList<>();
+        for (Book book : books.values()) {
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase())) {
+                result.add(book);
+            }
+        }
+        return result;
     }
 
     public List<Book> searchByAuthor(String author) {
-        return books.values().stream()
-            .filter(book -> book.getAuthor().toLowerCase().contains(author.toLowerCase()))
-            .collect(Collectors.toList());
+        List<Book> result = new ArrayList<>();
+        for (Book book : books.values()) {
+            if (book.getAuthor() != null) {
+                if (book.getAuthor().getFirstName().toLowerCase().contains(author.toLowerCase()) ||
+                    book.getAuthor().getLastName().toLowerCase().contains(author.toLowerCase())) {
+                    result.add(book);
+                }
+            }
+        }
+        return result;
     }
 
     public List<Book> searchByGenre(BookGenre genre) {
-        return books.values().stream()
-            .filter(book -> book.getGenre() == genre)
-            .collect(Collectors.toList());
+        List<Book> result = new ArrayList<>();
+        for (Book book : books.values()) {
+            if (book.getGenre() == genre) {
+                result.add(book);
+            }
+        }
+        return result;
     }
     
     // Helper method to check if ISBN is duplicate
@@ -163,7 +192,7 @@ public class BookService {
         if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
             throw new IllegalArgumentException("Title is required");
         }
-        if (book.getAuthor() == null || book.getAuthor().trim().isEmpty()) {
+        if (book.getAuthor() == null) {
             throw new IllegalArgumentException("Author is required");
         }
         

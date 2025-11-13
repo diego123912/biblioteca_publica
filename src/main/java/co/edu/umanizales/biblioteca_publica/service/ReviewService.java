@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class ReviewService {
@@ -31,19 +30,25 @@ public class ReviewService {
         try {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
-                if (row.size() >= 6) {
-                    Review review = new Review(
-                        row.get(0), // id
-                        row.get(1), // userId
-                        row.get(2), // bookId
-                        Integer.parseInt(row.get(3)), // rating
-                        row.get(4), // comment
-                        LocalDateTime.parse(row.get(5)), // creationDate
-                        Boolean.parseBoolean(row.get(6)), // approved
-                        null, // user (loaded on demand)
-                        null  // book (loaded on demand)
-                    );
-                    reviews.put(review.getId(), review);
+                if (row.size() >= 7) {
+                    String userId = row.get(1);
+                    String bookId = row.get(2);
+                    
+                    User user = userService.getById(userId);
+                    Book book = bookService.getById(bookId);
+                    
+                    if (user != null && book != null) {
+                        Review review = new Review(
+                            row.get(0), // id
+                            user, // user
+                            book, // book
+                            Integer.parseInt(row.get(3)), // rating
+                            row.get(4), // comment
+                            LocalDateTime.parse(row.get(5)), // creationDate
+                            Boolean.parseBoolean(row.get(6)) // approved
+                        );
+                        reviews.put(review.getId(), review);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -56,17 +61,18 @@ public class ReviewService {
             List<String> headers = Arrays.asList("id", "userId", "bookId", "rating", 
                 "comment", "creationDate", "approved");
             
-            List<List<String>> data = reviews.values().stream()
-                .map(review -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Review review : reviews.values()) {
+                data.add(Arrays.asList(
                     review.getId(),
-                    review.getUserId(),
-                    review.getBookId(),
+                    review.getUser() != null ? review.getUser().getId() : "",
+                    review.getBook() != null ? review.getBook().getId() : "",
                     String.valueOf(review.getRating()),
                     csvService.escapeCSV(review.getComment()),
                     review.getCreationDate().toString(),
                     String.valueOf(review.isApproved())
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -83,23 +89,18 @@ public class ReviewService {
         validateReview(review);
         
         // Check if user already reviewed this book
-        if (hasUserReviewedBook(review.getUserId(), review.getBookId())) {
+        if (review.getUser() != null && review.getBook() != null && 
+            hasUserReviewedBook(review.getUser().getId(), review.getBook().getId())) {
             throw new IllegalArgumentException("User already reviewed this book");
         }
         
-        // Composition: load user and book
-        Optional<User> user = userService.getById(review.getUserId());
-        Optional<Book> book = bookService.getById(review.getBookId());
-        
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found: " + review.getUserId());
+        // Validate user and book exist
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("User is required");
         }
-        if (book.isEmpty()) {
-            throw new IllegalArgumentException("Book not found: " + review.getBookId());
+        if (review.getBook() == null) {
+            throw new IllegalArgumentException("Book is required");
         }
-        
-        review.setUser(user.get());
-        review.setBook(book.get());
         
         reviews.put(review.getId(), review);
         saveToCSV();
@@ -110,25 +111,8 @@ public class ReviewService {
         return new ArrayList<>(reviews.values());
     }
 
-    public Optional<Review> getById(String id) {
-        Optional<Review> reviewOpt = Optional.ofNullable(reviews.get(id));
-        
-        // Load composition
-        if (reviewOpt.isPresent()) {
-            Review review = reviewOpt.get();
-            loadComposition(review);
-        }
-        
-        return reviewOpt;
-    }
-
-    private void loadComposition(Review review) {
-        if (review.getUser() == null) {
-            userService.getById(review.getUserId()).ifPresent(review::setUser);
-        }
-        if (review.getBook() == null) {
-            bookService.getById(review.getBookId()).ifPresent(review::setBook);
-        }
+    public Review getById(String id) {
+        return reviews.get(id);
     }
 
     public Review update(String id, Review updatedReview) {
@@ -150,30 +134,38 @@ public class ReviewService {
     }
 
     public List<Review> getByBook(String bookId) {
-        return reviews.values().stream()
-            .filter(r -> r.getBookId().equals(bookId))
-            .peek(this::loadComposition)
-            .collect(Collectors.toList());
+        List<Review> result = new ArrayList<>();
+        for (Review r : reviews.values()) {
+            if (r.getBook() != null && r.getBook().getId().equals(bookId)) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public List<Review> getByUser(String userId) {
-        return reviews.values().stream()
-            .filter(r -> r.getUserId().equals(userId))
-            .peek(this::loadComposition)
-            .collect(Collectors.toList());
+        List<Review> result = new ArrayList<>();
+        for (Review r : reviews.values()) {
+            if (r.getUser() != null && r.getUser().getId().equals(userId)) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public List<Review> getApproved() {
-        return reviews.values().stream()
-            .filter(Review::isApproved)
-            .peek(this::loadComposition)
-            .collect(Collectors.toList());
+        List<Review> result = new ArrayList<>();
+        for (Review r : reviews.values()) {
+            if (r.isApproved()) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public Review approveReview(String id) {
-        Optional<Review> reviewOpt = getById(id);
-        if (reviewOpt.isPresent()) {
-            Review review = reviewOpt.get();
+        Review review = getById(id);
+        if (review != null) {
             review.approve();
             reviews.put(id, review);
             saveToCSV();
@@ -183,17 +175,22 @@ public class ReviewService {
     }
 
     public double getAverageRatingBook(String bookId) {
-        return reviews.values().stream()
-            .filter(r -> r.getBookId().equals(bookId) && r.isApproved())
-            .mapToInt(Review::getRating)
-            .average()
-            .orElse(0.0);
+        int totalRating = 0;
+        int count = 0;
+        for (Review r : reviews.values()) {
+            if (r.getBook() != null && r.getBook().getId().equals(bookId) && r.isApproved()) {
+                totalRating += r.getRating();
+                count++;
+            }
+        }
+        return count > 0 ? (double) totalRating / count : 0.0;
     }
     
     // Helper method to check if user already reviewed a book
     private boolean hasUserReviewedBook(String userId, String bookId) {
         for (Review review : reviews.values()) {
-            if (review.getUserId().equals(userId) && review.getBookId().equals(bookId)) {
+            if (review.getUser() != null && review.getBook() != null &&
+                review.getUser().getId().equals(userId) && review.getBook().getId().equals(bookId)) {
                 return true;
             }
         }
@@ -203,11 +200,11 @@ public class ReviewService {
     // Helper method to validate review data
     private void validateReview(Review review) {
         // Check required fields are not empty
-        if (review.getUserId() == null || review.getUserId().trim().isEmpty()) {
-            throw new IllegalArgumentException("User ID is required");
+        if (review.getUser() == null) {
+            throw new IllegalArgumentException("User is required");
         }
-        if (review.getBookId() == null || review.getBookId().trim().isEmpty()) {
-            throw new IllegalArgumentException("Book ID is required");
+        if (review.getBook() == null) {
+            throw new IllegalArgumentException("Book is required");
         }
         if (review.getComment() == null || review.getComment().trim().isEmpty()) {
             throw new IllegalArgumentException("Comment is required");

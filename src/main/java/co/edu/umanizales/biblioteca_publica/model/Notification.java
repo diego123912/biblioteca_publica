@@ -1,5 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.model;
 
+import co.edu.umanizales.biblioteca_publica.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Notification {
     private String id;
-    private String userId;
-    private String type; // LOAN, RETURN, OVERDUE, GENERAL
+    private User user;
+    private NotificationType type;
     private String message;
     private LocalDateTime sendDate;
     private boolean read;

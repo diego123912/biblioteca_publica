@@ -12,8 +12,8 @@ public class Book {
     private String id;
     private String isbn;
     private String title;
-    private String author;
-    private String publisher;
+    private Author author;
+    private Publisher publisher;
     private int publicationYear;
     private BookGenre genre;
     private int availableQuantity;

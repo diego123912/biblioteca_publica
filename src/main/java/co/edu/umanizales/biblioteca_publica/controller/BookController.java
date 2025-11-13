@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -49,9 +48,11 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Book> getById(@PathVariable String id) {
-        Optional<Book> book = bookService.getById(id);
-        return book.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Book book = bookService.getById(id);
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

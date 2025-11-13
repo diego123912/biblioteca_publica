@@ -58,8 +58,12 @@ public class Library {
     }
 
     public int getActiveLoans() {
-        return (int) loans.stream()
-                .filter(loan -> loan.getStatus().toString().equals("ACTIVE"))
-                .count();
+        int count = 0;
+        for (Loan loan : loans) {
+            if (loan.getStatus().toString().equals("ACTIVE")) {
+                count++;
+            }
+        }
+        return count;
     }
 }

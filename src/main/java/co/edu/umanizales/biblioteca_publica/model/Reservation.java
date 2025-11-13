@@ -9,17 +9,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Reservation {
     private String id;
-    private String userId;
-    private String bookId;
+    private User user;
+    private Book book;
     private LocalDateTime reservationDate;
     private LocalDateTime expirationDate;
     private boolean active;
     private boolean completed;
 
-    public Reservation(String id, String userId, String bookId, LocalDateTime reservationDate, LocalDateTime expirationDate, boolean active, boolean completed) {
+    public Reservation(String id, User user, Book book, LocalDateTime reservationDate, LocalDateTime expirationDate, boolean active, boolean completed) {
         this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
+        this.user = user;
+        this.book = book;
         this.reservationDate = reservationDate;
         this.expirationDate = expirationDate;
         this.active = active;

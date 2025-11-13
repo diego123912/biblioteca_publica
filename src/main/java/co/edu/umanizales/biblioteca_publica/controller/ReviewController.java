@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reviews")
@@ -41,9 +40,11 @@ public class ReviewController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Review> getById(@PathVariable String id) {
-        Optional<Review> review = reviewService.getById(id);
-        return review.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Review review = reviewService.getById(id);
+        if (review != null) {
+            return ResponseEntity.ok(review);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

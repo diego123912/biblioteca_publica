@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -57,9 +56,11 @@ public class LoanController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Loan> getById(@PathVariable String id) {
-        Optional<Loan> loan = loanService.getById(id);
-        return loan.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Loan loan = loanService.getById(id);
+        if (loan != null) {
+            return ResponseEntity.ok(loan);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

@@ -1,23 +1,28 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
+import co.edu.umanizales.biblioteca_publica.model.Book;
 import co.edu.umanizales.biblioteca_publica.model.Reservation;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
     
     private final CSVService csvService;
+    private final UserService userService;
+    private final BookService bookService;
     private final Map<String, Reservation> reservations = new ConcurrentHashMap<>();
     private static final String FILE_NAME = "reservations.csv";
 
-    public ReservationService(CSVService csvService) {
+    public ReservationService(CSVService csvService, UserService userService, BookService bookService) {
         this.csvService = csvService;
+        this.userService = userService;
+        this.bookService = bookService;
         loadFromCSV();
     }
 
@@ -25,17 +30,25 @@ public class ReservationService {
         try {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
-                if (row.size() >= 6) {
-                    Reservation reservation = new Reservation(
-                        row.get(0), // id
-                        row.get(1), // userId
-                        row.get(2), // bookId
-                        LocalDateTime.parse(row.get(3)), // reservationDate
-                        LocalDateTime.parse(row.get(4)), // expirationDate
-                        Boolean.parseBoolean(row.get(5)), // active
-                        Boolean.parseBoolean(row.get(6))  // completed
-                    );
-                    reservations.put(reservation.getId(), reservation);
+                if (row.size() >= 7) {
+                    String userId = row.get(1);
+                    String bookId = row.get(2);
+                    
+                    User user = userService.getById(userId);
+                    Book book = bookService.getById(bookId);
+                    
+                    if (user != null && book != null) {
+                        Reservation reservation = new Reservation(
+                            row.get(0), // id
+                            user, // user
+                            book, // book
+                            LocalDateTime.parse(row.get(3)), // reservationDate
+                            LocalDateTime.parse(row.get(4)), // expirationDate
+                            Boolean.parseBoolean(row.get(5)), // active
+                            Boolean.parseBoolean(row.get(6))  // completed
+                        );
+                        reservations.put(reservation.getId(), reservation);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -48,17 +61,18 @@ public class ReservationService {
             List<String> headers = Arrays.asList("id", "userId", "bookId", "reservationDate", 
                 "expirationDate", "active", "completed");
             
-            List<List<String>> data = reservations.values().stream()
-                .map(reservation -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Reservation reservation : reservations.values()) {
+                data.add(Arrays.asList(
                     reservation.getId(),
-                    reservation.getUserId(),
-                    reservation.getBookId(),
+                    reservation.getUser() != null ? reservation.getUser().getId() : "",
+                    reservation.getBook() != null ? reservation.getBook().getId() : "",
                     reservation.getReservationDate().toString(),
                     reservation.getExpirationDate().toString(),
                     String.valueOf(reservation.isActive()),
                     String.valueOf(reservation.isCompleted())
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -79,8 +93,8 @@ public class ReservationService {
         return new ArrayList<>(reservations.values());
     }
 
-    public Optional<Reservation> getById(String id) {
-        return Optional.ofNullable(reservations.get(id));
+    public Reservation getById(String id) {
+        return reservations.get(id);
     }
 
     public Reservation update(String id, Reservation updatedReservation) {
@@ -102,21 +116,28 @@ public class ReservationService {
     }
 
     public List<Reservation> getByUser(String userId) {
-        return reservations.values().stream()
-            .filter(r -> r.getUserId().equals(userId))
-            .collect(Collectors.toList());
+        List<Reservation> result = new ArrayList<>();
+        for (Reservation r : reservations.values()) {
+            if (r.getUser() != null && r.getUser().getId().equals(userId)) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public List<Reservation> getActive() {
-        return reservations.values().stream()
-            .filter(Reservation::isActive)
-            .collect(Collectors.toList());
+        List<Reservation> result = new ArrayList<>();
+        for (Reservation r : reservations.values()) {
+            if (r.isActive()) {
+                result.add(r);
+            }
+        }
+        return result;
     }
 
     public Reservation cancel(String id) {
-        Optional<Reservation> reservationOpt = getById(id);
-        if (reservationOpt.isPresent()) {
-            Reservation reservation = reservationOpt.get();
+        Reservation reservation = getById(id);
+        if (reservation != null) {
             reservation.cancel();
             reservations.put(id, reservation);
             saveToCSV();
@@ -126,9 +147,8 @@ public class ReservationService {
     }
 
     public Reservation complete(String id) {
-        Optional<Reservation> reservationOpt = getById(id);
-        if (reservationOpt.isPresent()) {
-            Reservation reservation = reservationOpt.get();
+        Reservation reservation = getById(id);
+        if (reservation != null) {
             reservation.complete();
             reservations.put(id, reservation);
             saveToCSV();

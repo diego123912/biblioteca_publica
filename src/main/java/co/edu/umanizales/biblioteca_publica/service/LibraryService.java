@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class LibraryService {
@@ -44,15 +43,16 @@ public class LibraryService {
         try {
             List<String> headers = Arrays.asList("id", "name", "address", "phone", "schedule");
             
-            List<List<String>> data = libraries.values().stream()
-                .map(library -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Library library : libraries.values()) {
+                data.add(Arrays.asList(
                     library.getId(),
                     library.getName(),
                     library.getAddress(),
                     library.getPhone(),
                     library.getSchedule()
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -73,8 +73,8 @@ public class LibraryService {
         return new ArrayList<>(libraries.values());
     }
 
-    public Optional<Library> getById(String id) {
-        return Optional.ofNullable(libraries.get(id));
+    public Library getById(String id) {
+        return libraries.get(id);
     }
 
     public Library update(String id, Library updatedLibrary) {

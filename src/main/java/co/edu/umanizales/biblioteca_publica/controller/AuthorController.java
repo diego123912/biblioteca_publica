@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/authors")
@@ -33,9 +32,11 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Author> getById(@PathVariable String id) {
-        Optional<Author> author = authorService.getById(id);
-        return author.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Author author = authorService.getById(id);
+        if (author != null) {
+            return ResponseEntity.ok(author);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

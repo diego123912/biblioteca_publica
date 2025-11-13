@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/publishers")
@@ -34,9 +33,11 @@ public class PublisherController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Publisher> getById(@PathVariable String id) {
-        Optional<Publisher> publisher = publisherService.getById(id);
-        return publisher.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Publisher publisher = publisherService.getById(id);
+        if (publisher != null) {
+            return ResponseEntity.ok(publisher);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")

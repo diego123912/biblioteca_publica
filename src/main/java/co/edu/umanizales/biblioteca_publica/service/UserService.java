@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -83,37 +82,36 @@ public class UserService {
             List<String> headers = Arrays.asList("id", "firstName", "lastName", "email", "phone", 
                 "type", "field1", "field2");
             
-            List<List<String>> data = users.values().stream()
-                .map(user -> {
-                    String field1 = "";
-                    String field2 = "";
-                    
-                    if (user instanceof Student) {
-                        Student student = (Student) user;
-                        field1 = student.getMajor() != null ? student.getMajor() : "";
-                        field2 = student.getSemester() != null ? student.getSemester() : "";
-                    } else if (user instanceof Teacher) {
-                        Teacher teacher = (Teacher) user;
-                        field1 = teacher.getDepartment() != null ? teacher.getDepartment() : "";
-                        field2 = teacher.getSpecialization() != null ? teacher.getSpecialization() : "";
-                    } else if (user instanceof Administrator) {
-                        Administrator admin = (Administrator) user;
-                        field1 = admin.getRole() != null ? admin.getRole() : "";
-                        field2 = String.valueOf(admin.isFullPermission());
-                    }
-                    
-                    return Arrays.asList(
-                        user.getId(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getEmail(),
-                        user.getPhone() != null ? user.getPhone() : "",
-                        user.getType().toString(),
-                        field1,
-                        field2
-                    );
-                })
-                .collect(Collectors.toList());
+            List<List<String>> data = new ArrayList<>();
+            for (User user : users.values()) {
+                String field1 = "";
+                String field2 = "";
+                
+                if (user instanceof Student) {
+                    Student student = (Student) user;
+                    field1 = student.getMajor() != null ? student.getMajor() : "";
+                    field2 = student.getSemester() != null ? student.getSemester() : "";
+                } else if (user instanceof Teacher) {
+                    Teacher teacher = (Teacher) user;
+                    field1 = teacher.getDepartment() != null ? teacher.getDepartment() : "";
+                    field2 = teacher.getSpecialization() != null ? teacher.getSpecialization() : "";
+                } else if (user instanceof Administrator) {
+                    Administrator admin = (Administrator) user;
+                    field1 = admin.getRole() != null ? admin.getRole() : "";
+                    field2 = String.valueOf(admin.isFullPermission());
+                }
+                
+                data.add(Arrays.asList(
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getPhone() != null ? user.getPhone() : "",
+                    user.getType().toString(),
+                    field1,
+                    field2
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -143,8 +141,8 @@ public class UserService {
         return new ArrayList<>(users.values());
     }
 
-    public Optional<User> getById(String id) {
-        return Optional.ofNullable(users.get(id));
+    public User getById(String id) {
+        return users.get(id);
     }
 
     public User update(String id, User updatedUser) {
@@ -166,15 +164,22 @@ public class UserService {
     }
 
     public List<User> searchByType(UserType type) {
-        return users.values().stream()
-            .filter(user -> user.getType() == type)
-            .collect(Collectors.toList());
+        List<User> result = new ArrayList<>();
+        for (User user : users.values()) {
+            if (user.getType() == type) {
+                result.add(user);
+            }
+        }
+        return result;
     }
 
-    public Optional<User> searchByEmail(String email) {
-        return users.values().stream()
-            .filter(user -> user.getEmail().equalsIgnoreCase(email))
-            .findFirst();
+    public User searchByEmail(String email) {
+        for (User user : users.values()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return user;
+            }
+        }
+        return null;
     }
     
     // Helper method to check if email is duplicate

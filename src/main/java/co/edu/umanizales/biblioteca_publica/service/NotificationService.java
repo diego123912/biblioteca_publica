@@ -1,23 +1,26 @@
 package co.edu.umanizales.biblioteca_publica.service;
 
+import co.edu.umanizales.biblioteca_publica.enums.NotificationType;
 import co.edu.umanizales.biblioteca_publica.model.Notification;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
     
     private final CSVService csvService;
+    private final UserService userService;
     private final Map<String, Notification> notifications = new ConcurrentHashMap<>();
     private static final String FILE_NAME = "notifications.csv";
 
-    public NotificationService(CSVService csvService) {
+    public NotificationService(CSVService csvService, UserService userService) {
         this.csvService = csvService;
+        this.userService = userService;
         loadFromCSV();
     }
 
@@ -26,15 +29,21 @@ public class NotificationService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 6) {
-                    Notification notification = new Notification(
-                        row.get(0), // id
-                        row.get(1), // userId
-                        row.get(2), // type
-                        row.get(3), // message
-                        LocalDateTime.parse(row.get(4)), // sendDate
-                        Boolean.parseBoolean(row.get(5)) // read
-                    );
-                    notifications.put(notification.getId(), notification);
+                    String userId = row.get(1);
+                    
+                    User user = userService.getById(userId);
+                    
+                    if (user != null) {
+                        Notification notification = new Notification(
+                            row.get(0), // id
+                            user, // user
+                            NotificationType.valueOf(row.get(2)), // type
+                            row.get(3), // message
+                            LocalDateTime.parse(row.get(4)), // sendDate
+                            Boolean.parseBoolean(row.get(5)) // read
+                        );
+                        notifications.put(notification.getId(), notification);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -46,16 +55,17 @@ public class NotificationService {
         try {
             List<String> headers = Arrays.asList("id", "userId", "type", "message", "sendDate", "read");
             
-            List<List<String>> data = notifications.values().stream()
-                .map(notification -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Notification notification : notifications.values()) {
+                data.add(Arrays.asList(
                     notification.getId(),
-                    notification.getUserId(),
-                    notification.getType(),
+                    notification.getUser() != null ? notification.getUser().getId() : "",
+                    notification.getType() != null ? notification.getType().toString() : "",
                     csvService.escapeCSV(notification.getMessage()),
                     notification.getSendDate().toString(),
                     String.valueOf(notification.isRead())
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -80,8 +90,8 @@ public class NotificationService {
         return new ArrayList<>(notifications.values());
     }
 
-    public Optional<Notification> getById(String id) {
-        return Optional.ofNullable(notifications.get(id));
+    public Notification getById(String id) {
+        return notifications.get(id);
     }
 
     public Notification update(String id, Notification updatedNotification) {
@@ -102,24 +112,10 @@ public class NotificationService {
         return false;
     }
 
-    public List<Notification> getByUser(String userId) {
-        return notifications.values().stream()
-            .filter(n -> n.getUserId().equals(userId))
-            .sorted(Comparator.comparing(Notification::getSendDate).reversed())
-            .collect(Collectors.toList());
-    }
-
-    public List<Notification> getUnread(String userId) {
-        return notifications.values().stream()
-            .filter(n -> n.getUserId().equals(userId) && !n.isRead())
-            .sorted(Comparator.comparing(Notification::getSendDate).reversed())
-            .collect(Collectors.toList());
-    }
 
     public Notification markAsRead(String id) {
-        Optional<Notification> notificationOpt = getById(id);
-        if (notificationOpt.isPresent()) {
-            Notification notification = notificationOpt.get();
+        Notification notification = getById(id);
+        if (notification != null) {
             notification.markAsRead();
             notifications.put(id, notification);
             saveToCSV();
@@ -128,13 +124,53 @@ public class NotificationService {
         return null;
     }
     
+    public List<Notification> getByUser(String userId) {
+        List<Notification> result = new ArrayList<>();
+        for (Notification n : notifications.values()) {
+            if (n.getUser() != null && n.getUser().getId().equals(userId)) {
+                result.add(n);
+            }
+        }
+        // Sort by sendDate descending
+        for (int i = 0; i < result.size(); i++) {
+            for (int j = i + 1; j < result.size(); j++) {
+                if (result.get(i).getSendDate().isBefore(result.get(j).getSendDate())) {
+                    Notification temp = result.get(i);
+                    result.set(i, result.get(j));
+                    result.set(j, temp);
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Notification> getUnread(String userId) {
+        List<Notification> result = new ArrayList<>();
+        for (Notification n : notifications.values()) {
+            if (n.getUser() != null && n.getUser().getId().equals(userId) && !n.isRead()) {
+                result.add(n);
+            }
+        }
+        // Sort by sendDate descending
+        for (int i = 0; i < result.size(); i++) {
+            for (int j = i + 1; j < result.size(); j++) {
+                if (result.get(i).getSendDate().isBefore(result.get(j).getSendDate())) {
+                    Notification temp = result.get(i);
+                    result.set(i, result.get(j));
+                    result.set(j, temp);
+                }
+            }
+        }
+        return result;
+    }
+    
     // Helper method to validate notification data
     private void validateNotification(Notification notification) {
         // Check required fields are not empty
-        if (notification.getUserId() == null || notification.getUserId().trim().isEmpty()) {
-            throw new IllegalArgumentException("User ID is required");
+        if (notification.getUser() == null) {
+            throw new IllegalArgumentException("User is required");
         }
-        if (notification.getType() == null || notification.getType().trim().isEmpty()) {
+        if (notification.getType() == null) {
             throw new IllegalArgumentException("Type is required");
         }
         if (notification.getMessage() == null || notification.getMessage().trim().isEmpty()) {

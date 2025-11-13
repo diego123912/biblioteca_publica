@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {
@@ -47,16 +46,17 @@ public class AuthorService {
             List<String> headers = Arrays.asList("id", "firstName", "lastName", "nationality", 
                 "birthDate", "biography");
             
-            List<List<String>> data = authors.values().stream()
-                .map(author -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Author author : authors.values()) {
+                data.add(Arrays.asList(
                     author.getId(),
                     author.getFirstName(),
                     author.getLastName(),
                     author.getNationality(),
                     author.getBirthDate().toString(),
                     csvService.escapeCSV(author.getBiography())
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -86,8 +86,8 @@ public class AuthorService {
         return new ArrayList<>(authors.values());
     }
 
-    public Optional<Author> getById(String id) {
-        return Optional.ofNullable(authors.get(id));
+    public Author getById(String id) {
+        return authors.get(id);
     }
 
     public Author update(String id, Author updatedAuthor) {
@@ -109,10 +109,14 @@ public class AuthorService {
     }
 
     public List<Author> searchByName(String name) {
-        return authors.values().stream()
-            .filter(author -> author.getFirstName().toLowerCase().contains(name.toLowerCase()) ||
-                           author.getLastName().toLowerCase().contains(name.toLowerCase()))
-            .collect(Collectors.toList());
+        List<Author> result = new ArrayList<>();
+        for (Author author : authors.values()) {
+            if (author.getFirstName().toLowerCase().contains(name.toLowerCase()) ||
+                author.getLastName().toLowerCase().contains(name.toLowerCase())) {
+                result.add(author);
+            }
+        }
+        return result;
     }
     
     // Helper method to check if author name is duplicate

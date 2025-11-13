@@ -10,18 +10,18 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Loan {
     private String id;
-    private String userId;
-    private String bookId;
+    private User user;
+    private Book book;
     private LocalDate loanDate;
     private LocalDate estimatedReturnDate;
     private LocalDate actualReturnDate;
     private LoanStatus status;
     private String observations;
 
-    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate, LocalDate actualReturnDate, LoanStatus status, String observations) {
+    public Loan(String id, User user, Book book, LocalDate loanDate, LocalDate estimatedReturnDate, LocalDate actualReturnDate, LoanStatus status, String observations) {
         this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
+        this.user = user;
+        this.book = book;
         this.loanDate = loanDate;
         this.estimatedReturnDate = estimatedReturnDate;
         this.actualReturnDate = actualReturnDate;
@@ -29,10 +29,10 @@ public class Loan {
         this.observations = observations;
     }
 
-    public Loan(String id, String userId, String bookId, LocalDate loanDate, LocalDate estimatedReturnDate) {
+    public Loan(String id, User user, Book book, LocalDate loanDate, LocalDate estimatedReturnDate) {
         this.id = id;
-        this.userId = userId;
-        this.bookId = bookId;
+        this.user = user;
+        this.book = book;
         this.loanDate = loanDate;
         this.estimatedReturnDate = estimatedReturnDate;
         this.status = LoanStatus.ACTIVE;

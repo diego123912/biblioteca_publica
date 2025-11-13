@@ -2,7 +2,6 @@ package co.edu.umanizales.biblioteca_publica.repository;
 
 import co.edu.umanizales.biblioteca_publica.model.Publisher;
 import java.util.List;
-import java.util.Optional;
 
 public interface PublisherRepository {
     
@@ -10,7 +9,7 @@ public interface PublisherRepository {
     
     List<Publisher> getAll();
     
-    Optional<Publisher> getById(String id);
+    Publisher getById(String id);
     
     Publisher update(String id, Publisher publisher);
     

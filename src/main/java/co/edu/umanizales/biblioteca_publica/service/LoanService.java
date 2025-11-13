@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Service
 public class LoanService {
@@ -33,17 +32,25 @@ public class LoanService {
             List<List<String>> data = csvService.readCSV(FILE_NAME);
             for (List<String> row : data) {
                 if (row.size() >= 7) {
-                    Loan loan = new Loan(
-                        row.get(0), // id
-                        row.get(1), // userId
-                        row.get(2), // bookId
-                        LocalDate.parse(row.get(3)), // loanDate
-                        LocalDate.parse(row.get(4)), // estimatedReturnDate
-                        row.get(5).isEmpty() ? null : LocalDate.parse(row.get(5)), // actualReturnDate
-                        LoanStatus.valueOf(row.get(6)), // status
-                        row.size() > 7 ? row.get(7) : "" // observations
-                    );
-                    loans.put(loan.getId(), loan);
+                    String userId = row.get(1);
+                    String bookId = row.get(2);
+                    
+                    User user = userService.getById(userId);
+                    Book book = bookService.getById(bookId);
+                    
+                    if (user != null && book != null) {
+                        Loan loan = new Loan(
+                            row.get(0), // id
+                            user, // user
+                            book, // book
+                            LocalDate.parse(row.get(3)), // loanDate
+                            LocalDate.parse(row.get(4)), // estimatedReturnDate
+                            row.get(5).isEmpty() ? null : LocalDate.parse(row.get(5)), // actualReturnDate
+                            LoanStatus.valueOf(row.get(6)), // status
+                            row.size() > 7 ? row.get(7) : "" // observations
+                        );
+                        loans.put(loan.getId(), loan);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -56,18 +63,19 @@ public class LoanService {
             List<String> headers = Arrays.asList("id", "userId", "bookId", "loanDate", 
                 "estimatedReturnDate", "actualReturnDate", "status", "observations");
             
-            List<List<String>> data = loans.values().stream()
-                .map(loan -> Arrays.asList(
+            List<List<String>> data = new ArrayList<>();
+            for (Loan loan : loans.values()) {
+                data.add(Arrays.asList(
                     loan.getId(),
-                    loan.getUserId(),
-                    loan.getBookId(),
+                    loan.getUser().getId(),
+                    loan.getBook().getId(),
                     loan.getLoanDate().toString(),
                     loan.getEstimatedReturnDate().toString(),
                     loan.getActualReturnDate() != null ? loan.getActualReturnDate().toString() : "",
                     loan.getStatus().toString(),
                     loan.getObservations() != null ? loan.getObservations() : ""
-                ))
-                .collect(Collectors.toList());
+                ));
+            }
             
             csvService.writeCSV(FILE_NAME, headers, data);
         } catch (IOException e) {
@@ -77,24 +85,24 @@ public class LoanService {
 
     // Polymorphism: method that manages loans using the polymorphic getLoanDays() method
     public Loan performLoan(String userId, String bookId) {
-        Optional<User> userOpt = userService.getById(userId);
-        Optional<Book> bookOpt = bookService.getById(bookId);
+        User user = userService.getById(userId);
+        Book book = bookService.getById(bookId);
 
-        if (userOpt.isEmpty() || bookOpt.isEmpty()) {
+        if (user == null || book == null) {
             throw new RuntimeException("User or book not found");
         }
-
-        User user = userOpt.get();
-        Book book = bookOpt.get();
 
         if (!book.isAvailable()) {
             throw new RuntimeException("Book not available");
         }
 
-        long activeLoans = loans.values().stream()
-            .filter(p -> p.getUserId().equals(userId))
-            .filter(p -> p.getStatus() == LoanStatus.ACTIVE || p.getStatus() == LoanStatus.OVERDUE)
-            .count();
+        long activeLoans = 0;
+        for (Loan p : loans.values()) {
+            if (p.getUser().getId().equals(userId) && 
+                (p.getStatus() == LoanStatus.ACTIVE || p.getStatus() == LoanStatus.OVERDUE)) {
+                activeLoans++;
+            }
+        }
 
         if (activeLoans >= user.getLoanLimit()) {
             throw new RuntimeException("User has reached the loan limit");
@@ -104,7 +112,7 @@ public class LoanService {
         LocalDate loanDate = LocalDate.now();
         LocalDate returnDate = loanDate.plusDays(user.getLoanDays()); // Polymorphism
 
-        Loan loan = new Loan(id, userId, bookId, loanDate, returnDate);
+        Loan loan = new Loan(id, user, book, loanDate, returnDate);
         book.borrow();
         bookService.update(bookId, book);
         
@@ -119,22 +127,17 @@ public class LoanService {
 
     // Polymorphism: method that manages returns
     public Loan performReturn(String loanId) {
-        Optional<Loan> loanOpt = getById(loanId);
+        Loan loan = getById(loanId);
         
-        if (loanOpt.isEmpty()) {
+        if (loan == null) {
             throw new RuntimeException("Loan not found");
         }
+        Book book = loan.getBook();
+        User user = loan.getUser();
 
-        Loan loan = loanOpt.get();
-        Optional<Book> bookOpt = bookService.getById(loan.getBookId());
-        Optional<User> userOpt = userService.getById(loan.getUserId());
-
-        if (bookOpt.isEmpty() || userOpt.isEmpty()) {
+        if (book == null || user == null) {
             throw new RuntimeException("Book or user not found");
         }
-
-        Book book = bookOpt.get();
-        User user = userOpt.get();
 
         loan.returnBook();
         book.returnBook();
@@ -166,8 +169,8 @@ public class LoanService {
         return new ArrayList<>(loans.values());
     }
 
-    public Optional<Loan> getById(String id) {
-        return Optional.ofNullable(loans.get(id));
+    public Loan getById(String id) {
+        return loans.get(id);
     }
 
     public Loan update(String id, Loan updatedLoan) {
@@ -189,32 +192,38 @@ public class LoanService {
     }
 
     public List<Loan> getByUser(String userId) {
-        return loans.values().stream()
-            .filter(p -> p.getUserId().equals(userId))
-            .collect(Collectors.toList());
+        List<Loan> result = new ArrayList<>();
+        for (Loan p : loans.values()) {
+            if (p.getUser().getId().equals(userId)) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 
     public List<Loan> getByStatus(LoanStatus status) {
-        return loans.values().stream()
-            .filter(p -> p.getStatus() == status)
-            .collect(Collectors.toList());
+        List<Loan> result = new ArrayList<>();
+        for (Loan p : loans.values()) {
+            if (p.getStatus() == status) {
+                result.add(p);
+            }
+        }
+        return result;
     }
 
     public void checkOverdue() {
-        loans.values().forEach(loan -> {
+        for (Loan loan : loans.values()) {
             if (loan.isOverdue()) {
                 loan.markOverdue();
                 
-                Optional<User> userOpt = userService.getById(loan.getUserId());
-                Optional<Book> bookOpt = bookService.getById(loan.getBookId());
+                User user = loan.getUser();
+                Book book = loan.getBook();
                 
-                if (userOpt.isPresent() && bookOpt.isPresent()) {
-                    User user = userOpt.get();
-                    Book book = bookOpt.get();
+                if (user != null && book != null) {
                     user.sendNotification("Loan overdue: " + book.getTitle() + ". Delay days: " + loan.getDelayDays());
                 }
             }
-        });
+        }
         saveToCSV();
     }
 }

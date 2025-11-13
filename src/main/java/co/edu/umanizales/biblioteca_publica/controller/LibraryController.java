@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/libraries")
@@ -33,9 +32,11 @@ public class LibraryController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Library> getById(@PathVariable String id) {
-        Optional<Library> library = libraryService.getById(id);
-        return library.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Library library = libraryService.getById(id);
+        if (library != null) {
+            return ResponseEntity.ok(library);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
