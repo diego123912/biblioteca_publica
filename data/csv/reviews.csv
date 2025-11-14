@@ -1,5 +1,2 @@
 id,userId,bookId,rating,comment,creationDate,approved
-54e39bb3-8c18-4e7d-9a11-9f1f86fc2798,STU001,BK001,5,Excellent book!,2025-11-06T20:00,false
-REV001,STU001,BK002,4,Great dystopian novel,2025-11-05T15:30,true
-REV002,STU002,BK003,5,Beautiful and touching story,2025-11-07T10:00,true
-REV003,TCH001,BK001,5,A masterpiece of literature,2025-11-08T14:20,true
+b1ff6993-18b3-47d2-be6a-865ac775e8e9,50e73c73-1755-4427-909c-f091b7dfc8ea,95d8a678-aa04-4924-a588-8ef0000d5e17,4,"Great read, highly recommend!",2025-11-14T16:26:35.797036800,false

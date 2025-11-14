@@ -1,5 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.controller;
 
+import co.edu.umanizales.biblioteca_publica.dto.LoanRequestDTO;
 import co.edu.umanizales.biblioteca_publica.enums.LoanStatus;
 import co.edu.umanizales.biblioteca_publica.model.Loan;
 import co.edu.umanizales.biblioteca_publica.service.LoanService;
@@ -22,9 +23,14 @@ public class LoanController {
     }
 
     @PostMapping
-    public ResponseEntity<Loan> create(@RequestBody Loan loan) {
-        Loan newLoan = loanService.create(loan);
-        return new ResponseEntity<>(newLoan, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody LoanRequestDTO loanRequest) {
+        try {
+            Loan loan = loanService.performLoan(loanRequest.getUserId(), loanRequest.getBookId());
+            return new ResponseEntity<>(loan, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @PostMapping("/perform")

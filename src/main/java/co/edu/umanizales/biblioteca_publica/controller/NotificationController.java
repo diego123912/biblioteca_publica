@@ -1,12 +1,17 @@
 package co.edu.umanizales.biblioteca_publica.controller;
 
+import co.edu.umanizales.biblioteca_publica.enums.NotificationType;
 import co.edu.umanizales.biblioteca_publica.model.Notification;
+import co.edu.umanizales.biblioteca_publica.model.User;
 import co.edu.umanizales.biblioteca_publica.service.NotificationService;
+import co.edu.umanizales.biblioteca_publica.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -14,14 +19,48 @@ import java.util.List;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final UserService userService;
 
-    public NotificationController(NotificationService notificationService) {
+    public NotificationController(NotificationService notificationService, UserService userService) {
         this.notificationService = notificationService;
+        this.userService = userService;
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Notification notification) {
+    public ResponseEntity<?> create(@RequestBody Map<String, Object> notificationData) {
         try {
+            // Extract usuarioId and fetch the User
+            String usuarioId = (String) notificationData.get("usuarioId");
+            if (usuarioId == null || usuarioId.trim().isEmpty()) {
+                return new ResponseEntity<>("usuarioId is required", HttpStatus.BAD_REQUEST);
+            }
+            
+            User user = userService.getById(usuarioId);
+            if (user == null) {
+                return new ResponseEntity<>("User not found with id: " + usuarioId, HttpStatus.BAD_REQUEST);
+            }
+            
+            // Extract other fields
+            String tipoStr = (String) notificationData.get("tipo");
+            NotificationType tipo = NotificationType.valueOf(tipoStr);
+            
+            String mensaje = (String) notificationData.get("mensaje");
+            String fechaEnvioStr = (String) notificationData.get("fechaEnvio");
+            LocalDateTime fechaEnvio = LocalDateTime.parse(fechaEnvioStr);
+            
+            Boolean leida = (Boolean) notificationData.get("leida");
+            if (leida == null) {
+                leida = false;
+            }
+            
+            // Create Notification object
+            Notification notification = new Notification();
+            notification.setUser(user);
+            notification.setType(tipo);
+            notification.setMessage(mensaje);
+            notification.setSendDate(fechaEnvio);
+            notification.setRead(leida);
+            
             Notification newNotification = notificationService.create(notification);
             return new ResponseEntity<>(newNotification, HttpStatus.CREATED);
         } catch (IllegalArgumentException error) {

@@ -107,6 +107,50 @@ public class ReviewService {
         return review;
     }
 
+    public Review createReview(String userId, String bookId, int rating, String comment) {
+        User user = userService.getById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+
+        Book book = bookService.getById(bookId);
+        if (book == null) {
+            throw new RuntimeException("Book not found with id: " + bookId);
+        }
+
+        // Check if user already reviewed this book
+        if (hasUserReviewedBook(userId, bookId)) {
+            throw new RuntimeException("User already reviewed this book");
+        }
+
+        // Validate rating
+        if (rating < 1 || rating > 5) {
+            throw new RuntimeException("Rating must be between 1 and 5");
+        }
+
+        // Validate comment
+        if (comment == null || comment.trim().isEmpty()) {
+            throw new RuntimeException("Comment is required");
+        }
+
+        String id = UUID.randomUUID().toString();
+        LocalDateTime creationDate = LocalDateTime.now();
+
+        Review review = new Review(
+            id,
+            user,
+            book,
+            rating,
+            comment,
+            creationDate,
+            false  // Reviews start as not approved
+        );
+
+        reviews.put(id, review);
+        saveToCSV();
+        return review;
+    }
+
     public List<Review> getAll() {
         return new ArrayList<>(reviews.values());
     }

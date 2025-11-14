@@ -3,6 +3,7 @@ package co.edu.umanizales.biblioteca_publica.service;
 import co.edu.umanizales.biblioteca_publica.enums.NotificationType;
 import co.edu.umanizales.biblioteca_publica.model.Notification;
 import co.edu.umanizales.biblioteca_publica.model.User;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,9 +17,9 @@ public class NotificationService {
     private final CSVService csvService;
     private final UserService userService;
     private final Map<String, Notification> notifications = new ConcurrentHashMap<>();
-    private static final String FILE_NAME = "notifications.csv";
+    private static final String FILE_NAME = "notification.csv";
 
-    public NotificationService(CSVService csvService, UserService userService) {
+    public NotificationService(CSVService csvService, @Lazy UserService userService) {
         this.csvService = csvService;
         this.userService = userService;
         loadFromCSV();

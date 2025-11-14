@@ -1,5 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.controller;
 
+import co.edu.umanizales.biblioteca_publica.dto.ReviewRequestDTO;
 import co.edu.umanizales.biblioteca_publica.model.Review;
 import co.edu.umanizales.biblioteca_publica.service.ReviewService;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,18 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Review review) {
+    public ResponseEntity<?> create(@RequestBody ReviewRequestDTO reviewRequest) {
         try {
-            Review newReview = reviewService.create(review);
-            return new ResponseEntity<>(newReview, HttpStatus.CREATED);
-        } catch (IllegalArgumentException error) {
-            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception error) {
-            return new ResponseEntity<>("Internal server error: " + error.getMessage(), 
-                HttpStatus.INTERNAL_SERVER_ERROR);
+            Review review = reviewService.createReview(
+                reviewRequest.getUserId(),
+                reviewRequest.getBookId(),
+                reviewRequest.getRating(),
+                reviewRequest.getComment()
+            );
+            return new ResponseEntity<>(review, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

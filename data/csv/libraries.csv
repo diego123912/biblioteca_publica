@@ -1,5 +1,6 @@
-id,name,address,city,country,phone,email,opening_hours
-LIB001,Central Library,123 Main Street,New York,United States,+1-555-0123,info@centrallibrary.org,9:00 AM - 8:00 PM
-LIB002,Downtown Library,456 Oak Avenue,Los Angeles,United States,+1-555-0124,contact@downtownlibrary.org,10:00 AM - 6:00 PM
-LIB003,University Library,789 Campus Road,Boston,United States,+1-555-0125,support@universitylibrary.edu,8:00 AM - 10:00 PM
-LIB004,Public Library,321 Park Lane,Chicago,United States,+1-555-0126,info@publiclibrary.org,9:00 AM - 7:00 PM
+id,name,address,phone,schedule
+727b9ecb-d5b5-4f54-8532-b647c9aaa1c2,Community Library,555 Street, Miami, USA,+1-555-0127,9:00 AM - 6:00 PM
+LIB004,Public Library,321 Park Lane,Chicago,United States
+LIB003,University Library,789 Campus Road,Boston,United States
+LIB002,Downtown Library,456 Oak Avenue,Los Angeles,United States
+LIB001,Central Library,123 Main Street,New York,United States

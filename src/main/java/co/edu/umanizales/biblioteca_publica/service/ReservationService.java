@@ -89,6 +89,40 @@ public class ReservationService {
         return reservation;
     }
 
+    public Reservation createReservation(String userId, String bookId) {
+        User user = userService.getById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+
+        Book book = bookService.getById(bookId);
+        if (book == null) {
+            throw new RuntimeException("Book not found with id: " + bookId);
+        }
+
+        if (!book.isAvailable()) {
+            throw new RuntimeException("Book is not available for reservation");
+        }
+
+        String id = UUID.randomUUID().toString();
+        LocalDateTime reservationDate = LocalDateTime.now();
+        LocalDateTime expirationDate = reservationDate.plusDays(3); // Reservation expires in 3 days
+
+        Reservation reservation = new Reservation(
+            id,
+            user,
+            book,
+            reservationDate,
+            expirationDate,
+            true,
+            false
+        );
+
+        reservations.put(id, reservation);
+        saveToCSV();
+        return reservation;
+    }
+
     public List<Reservation> getAll() {
         return new ArrayList<>(reservations.values());
     }

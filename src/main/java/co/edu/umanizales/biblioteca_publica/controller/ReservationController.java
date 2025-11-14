@@ -1,5 +1,6 @@
 package co.edu.umanizales.biblioteca_publica.controller;
 
+import co.edu.umanizales.biblioteca_publica.dto.ReservationRequestDTO;
 import co.edu.umanizales.biblioteca_publica.model.Reservation;
 import co.edu.umanizales.biblioteca_publica.service.ReservationService;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+/**
+ * Controlador REST para gestionar reservaciones de libros
+ * Endpoints disponibles:
+ * - POST /api/reservations - Crear nueva reservación
+ * - GET /api/reservations - Obtener todas las reservaciones
+ * - GET /api/reservations/{id} - Obtener reservación por ID
+ * - PUT /api/reservations/{id} - Actualizar reservación
+ * - DELETE /api/reservations/{id} - Eliminar reservación
+ * - GET /api/reservations/user/{userId} - Obtener reservaciones de un usuario
+ * - GET /api/reservations/active - Obtener reservaciones activas
+ * - POST /api/reservations/{id}/cancel - Cancelar reservación
+ * - POST /api/reservations/{id}/complete - Completar reservación
+ */
 @RestController
 @RequestMapping("/api/reservations")
 @CrossOrigin(origins = "*")
@@ -20,9 +35,23 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> create(@RequestBody Reservation reservation) {
-        Reservation newReservation = reservationService.create(reservation);
-        return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
+    public ResponseEntity<?> create(@RequestBody ReservationRequestDTO reservationRequest) {
+        try {
+            // Obtener IDs del request
+            String userId = reservationRequest.getUserId();
+            String bookId = reservationRequest.getBookId();
+            
+            // Crear la reservación usando el servicio
+            Reservation newReservation = reservationService.createReservation(userId, bookId);
+            
+            // Retornar la reservación creada con código 201 (CREATED)
+            return new ResponseEntity<>(newReservation, HttpStatus.CREATED);
+            
+        } catch (RuntimeException e) {
+            // Si hay un error, retornar mensaje de error con código 400 (BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping

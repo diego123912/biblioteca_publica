@@ -1,2 +1,5 @@
-id,usuarioId,tipo,mensaje,fechaEnvio,leida
-17bdf1bc-3ba3-42ff-a4a9-b13947a66060,EST001,GENERAL,Nueva notificación,2025-10-18T20:00,false
+id,userId,type,message,sendDate,read
+17bdf1bc-3ba3-42ff-a4a9-b13947a66060,STU001,GENERAL,Nueva notificación,2025-10-18T20:00,false
+a191498d-b545-4fd9-803e-8f5f10220e44,STU001,GENERAL,Tu libro está listo,2025-11-14T14:00,false
+4dc85be1-61a0-476c-a563-16b982a7b9db,STU001,GENERAL,Tu libro está listo,2025-11-14T14:00,false
+b534fc8a-6677-4e0b-bf61-78c8f3436702,STU001,GENERAL,Tu libro está listo,2025-11-14T14:00,false
