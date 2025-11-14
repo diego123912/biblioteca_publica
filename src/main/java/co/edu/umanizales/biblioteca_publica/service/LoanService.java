@@ -160,6 +160,24 @@ public class LoanService {
         if (loan.getId() == null || loan.getId().isEmpty()) {
             loan.setId(UUID.randomUUID().toString());
         }
+        
+        // Load complete User and Book objects if only IDs are provided
+        if (loan.getUser() != null && loan.getUser().getId() != null) {
+            User user = userService.getById(loan.getUser().getId());
+            if (user == null) {
+                throw new RuntimeException("User not found with ID: " + loan.getUser().getId());
+            }
+            loan.setUser(user);
+        }
+        
+        if (loan.getBook() != null && loan.getBook().getId() != null) {
+            Book book = bookService.getById(loan.getBook().getId());
+            if (book == null) {
+                throw new RuntimeException("Book not found with ID: " + loan.getBook().getId());
+            }
+            loan.setBook(book);
+        }
+        
         loans.put(loan.getId(), loan);
         saveToCSV();
         return loan;
