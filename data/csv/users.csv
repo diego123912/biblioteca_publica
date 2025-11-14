@@ -1,8 +1,11 @@
 id,firstName,lastName,email,phone,type,field1,field2
 TCH001,Ana,Martinez,ana.martinez@example.com,3105551234,TEACHER,Department of Sciences,Quantum Physics
 70c71b99-4b13-4032-921a-0f9824452d2f,Pedro,Lopez,pedro.lopez@example.com,3001112233,STUDENT,Law,4
+a6184db1-b55d-462e-9ae5-050223670f24,Luis,Sanchez,luis@example.com,3207778899,ADMINISTRATOR,Admin,true
 STU001,Maria,Gonzalez,maria.gonzalez@example.com,3001234567,STUDENT,Systems Engineering,6
+deed6688-7fab-4644-bf24-0bc455cb0938,Maria,Gonzalez,maria@example.com,3001234567,STUDENT,Systems Engineering,6
 STU002,Carlos,Rodriguez,carlos.rodriguez@example.com,3009876543,STUDENT,Medicine,3
 9daa6508-2346-4e40-9723-ba318cb8c874,Diego,Ramirez,diegon.ramirez@example.com,3002223344,TEACHER,Mathematics,Linear Algebra
 ADM001,Luis,Sanchez,luis.sanchez@example.com,3207778899,ADMINISTRATOR,General Administrator,true
 49845029-9cc1-451c-a9b2-f760e38098f8,Laura,Ramirez,laura.ramirez@example.com,3002223344,TEACHER,Mathematics,Linear Algebra
+49055286-f974-4eb9-ad6d-24dd4031a7e9,Ana,Martinez,ana@example.com,3105551234,TEACHER,Sciences,Physics

@@ -25,8 +25,34 @@ public class BookController {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Book book) {
         try {
+            // Validate that required fields are present
+            if (book.getIsbn() == null || book.getIsbn().trim().isEmpty()) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "ISBN is required");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+            if (book.getTitle() == null || book.getTitle().trim().isEmpty()) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Title is required");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+            if (book.getAuthor() == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Author is required");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+            if (book.getPublisher() == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Publisher is required");
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            }
+            
             Book newBook = bookService.create(book);
             return new ResponseEntity<>(newBook, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error creating book: " + e.getMessage());

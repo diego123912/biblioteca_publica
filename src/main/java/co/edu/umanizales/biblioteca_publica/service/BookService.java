@@ -195,17 +195,20 @@ public class BookService {
         if (book.getAuthor() == null) {
             throw new IllegalArgumentException("Author is required");
         }
+        if (book.getPublisher() == null) {
+            throw new IllegalArgumentException("Publisher is required");
+        }
         
         // Check ISBN format (basic: 10 or 13 digits)
         String isbnDigits = book.getIsbn().replaceAll("[^0-9]", "");
         if (isbnDigits.length() != 10 && isbnDigits.length() != 13) {
-            throw new IllegalArgumentException("ISBN must be 10 or 13 digits");
+            throw new IllegalArgumentException("ISBN must be 10 or 13 digits (found: " + isbnDigits.length() + ")");
         }
         
         // Check publication year is valid
         int currentYear = java.time.Year.now().getValue();
         if (book.getPublicationYear() < 1000 || book.getPublicationYear() > currentYear) {
-            throw new IllegalArgumentException("Invalid publication year: " + book.getPublicationYear());
+            throw new IllegalArgumentException("Invalid publication year: " + book.getPublicationYear() + " (must be between 1000 and " + currentYear + ")");
         }
         
         // Check quantities are valid
